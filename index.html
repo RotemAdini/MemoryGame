@@ -1,14 +1,1091 @@
-<!-- מסך תוצאות -->
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>משחק הזיכרון הגדול</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #0a0a23 0%, #1a1a3a 30%, #2d1b69 60%, #8b2b9b 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        /* אנימציית רקע משופרת */
+        .synthwave-grid {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) perspective(500px) rotateX(60deg);
+            width: 200%;
+            height: 50vh;
+            background-image: 
+                linear-gradient(rgba(255, 0, 150, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 150, 0.3) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridMove 10s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* אנימציות משופרות */
+        @keyframes gridMove {
+            0% { transform: translateX(-50%) perspective(500px) rotateX(60deg) translateZ(0); }
+            100% { transform: translateX(-50%) perspective(500px) rotateX(60deg) translateZ(40px); }
+        }
+
+        @keyframes slideInFromRight {
+            0% { 
+                opacity: 0; 
+                transform: translateX(100%); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        @keyframes slideInFromLeft {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-100%); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% { 
+                opacity: 0; 
+                transform: translateY(50px) scale(0.95); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        @keyframes zoomIn {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.8) rotate(-5deg); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) rotate(0deg); 
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(255, 0, 132, 0.5);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(255, 0, 132, 0.8), 0 0 60px rgba(0, 255, 255, 0.4);
+            }
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(5deg); }
+            75% { transform: translateY(-5px) rotate(-3deg); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes buttonHover {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.05); }
+            100% { transform: translateY(-5px) scale(1.03); }
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0) rotateX(0); }
+            50% { transform: translateY(-10px) rotateX(2deg); }
+        }
+
+        .container {
+            width: 100vw;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .screen {
+            display: none !important;
+            width: 100%;
+            height: 100%;
+        }
+
+        .screen.active {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            height: 100dvh;
+            overflow: hidden;
+            padding: 20px;
+            animation: fadeInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .screen.slide-right {
+            animation: slideInFromRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .screen.slide-left {
+            animation: slideInFromLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .screen.zoom {
+            animation: zoomIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* מבנה כללי למסכים רגילים */
+        .screen-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .screen-actions {
+            padding: 20px 0;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* מסך המשחק - מבנה שונה */
+        #game-screen.active {
+            justify-content: flex-start;
+            padding-top: 60px;
+        }
+
+        #game-screen .game-header {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        #game-screen .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        #game-screen .game-controls {
+            padding: 20px 0;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .title {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            background: linear-gradient(45deg, #fff, #f0f0f0, #fff);
+            background-size: 200% 200%;
+            animation: shimmer 3s ease-in-out infinite, pulse 3s infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .card {
+            background: rgba(26, 0, 51, 0.3);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: clamp(1.5rem, 4vw, 2.5rem);
+            margin: 1rem 0;
+            border: 2px solid #ff0084;
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(255, 0, 132, 0.3),
+                inset 0 0 30px rgba(0, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            width: 100%;
+            max-width: 600px;
+            animation: cardFloat 4s ease-in-out infinite;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            animation-play-state: paused;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 50px rgba(255, 0, 132, 0.5),
+                inset 0 0 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff0084, #00ffff);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px auto;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(255, 0, 132, 0.5);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            animation: buttonHover 0.6s ease-out;
+            animation-fill-mode: forwards;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(255, 0, 132, 0.8),
+                0 0 60px rgba(0, 255, 255, 0.4);
+        }
+
+        .btn:active {
+            transform: scale(0.95) translateY(-2px);
+            transition: transform 0.1s ease-out;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            animation: glowPulse 3s infinite;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .btn-share {
+            background: linear-gradient(45deg, #25D366, #128C7E);
+        }
+
+        .input-group {
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            border-radius: 20px;
+            border: none;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            margin: 0 auto;
+            display: block;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 0, 132, 0.5);
+        }
+
+        .players-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .player-card {
+            flex: 1;
+            min-width: 140px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 2px solid transparent;
+        }
+
+        .player-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 0, 132, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .player-card:nth-child(2) {
+            flex: 1.5;
+        }
+
+        .failures {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 5px;
+            animation: iconBounce 2s infinite;
+        }
+
+        .question-card {
+            background: rgba(26, 0, 51, 0.4);
+            border-radius: 30px;
+            padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+            margin: 1.5rem 0;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            line-height: 1.8;
+            border: 3px solid #00ffff;
+            box-shadow: 
+                0 15px 50px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(0, 255, 255, 0.4),
+                inset 0 0 40px rgba(255, 0, 132, 0.1);
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            width: 100%;
+            max-width: 700px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: cardFloat 6s ease-in-out infinite;
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            animation-play-state: paused;
+        }
+
+        .chapter-title {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-weight: bold;
+            margin: 2rem 0;
+            text-align: center;
+            background: linear-gradient(45deg, #ffeaa7, #fab1a0, #ffeaa7);
+            background-size: 200% 200%;
+            animation: shimmer 2s ease-in-out infinite, pulse 2s infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .timer {
+            font-size: clamp(5rem, 20vw, 10rem);
+            font-weight: bold;
+            margin: 2rem 0;
+            text-shadow: 5px 5px 10px rgba(0,0,0,0.7);
+            animation: pulse 1s infinite, glowPulse 2s infinite;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 1.5rem auto;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .controls .btn {
+            width: 100%;
+            padding: 15px;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            margin: 0;
+            display: inline-block;
+        }
+
+        .secondary-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 1rem auto;
+            max-width: 600px;
+        }
+
+        .secondary-controls .btn {
+            display: inline-block;
+            margin: 0;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            padding: 10px 20px;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .popup-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: clamp(2rem, 5vw, 3rem);
+            border-radius: 30px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: zoomIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .popup-content .btn {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border-radius: 6px;
+            transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 70px;
+            height: 40px;
+            margin: 0 15px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-radius: 40px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 32px;
+            width: 32px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        .slider:hover:before {
+            box-shadow: 0 0 15px rgba(255, 0, 132, 0.5);
+        }
+
+        .score-animation {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #4ecdc4;
+            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .celebration {
+            animation: pulse 0.5s infinite alternate;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .info-box:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 0, 132, 0.5);
+        }
+
+        .sensual-warning {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 1rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .settings-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(10px);
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 0, 132, 0.5);
+        }
+
+        /* כפתור שליטה על הצליל */
+        .sound-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(10px);
+        }
+
+        .sound-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .sound-btn.muted {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: rgba(255, 107, 107, 0.5);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ff0084;
+            animation: confetti 3s linear;
+            z-index: 1001;
+        }
+
+        .confetti:nth-child(even) {
+            background: #00ffff;
+            animation-delay: 0.5s;
+        }
+
+        .confetti:nth-child(3n) {
+            background: #ffeaa7;
+            animation-delay: 0.3s;
+        }
+
+        /* אייקונים אינטראקטיביים */
+        .interactive-icon {
+            display: inline-block;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+        }
+
+        .interactive-icon:hover {
+            animation: iconBounce 0.6s ease-out;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 132, 0.8));
+        }
+
+        /* אופטימיזציה למובייל */
+        @media (max-width: 768px) {
+            .synthwave-grid {
+                display: none;
+            }
+            
+            .screen.active {
+                padding: 10px;
+            }
+            
+            #game-screen.active {
+                padding-top: 50px;
+            }
+            
+            .title { 
+                font-size: 1.8rem;
+                margin-bottom: 1rem;
+            }
+            
+            .subtitle { 
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .card {
+                padding: 1.2rem;
+                margin: 0.5rem 0;
+            }
+            
+            .players-info { 
+                gap: 5px;
+            }
+            
+            .player-card {
+                padding: 0.7rem;
+                min-width: 100px;
+                font-size: 0.9rem;
+            }
+            
+            .question-card { 
+                font-size: 1.1rem;
+                padding: 1.5rem 1rem;
+                margin: 1rem 0;
+                min-height: 120px;
+            }
+            
+            .controls { 
+                gap: 8px;
+                margin: 1rem 0;
+            }
+            
+            .controls .btn {
+                padding: 12px 8px;
+                font-size: 0.85rem;
+            }
+            
+            .secondary-controls {
+                gap: 8px;
+                margin: 0.5rem 0;
+            }
+            
+            .secondary-controls .btn {
+                font-size: 0.75rem;
+                padding: 8px 15px;
+            }
+            
+            .btn { 
+                font-size: 1rem;
+                padding: 12px 25px;
+            }
+            
+            .timer { 
+                font-size: 4rem;
+                margin: 1.5rem 0;
+            }
+            
+            .chapter-title {
+                font-size: 1.5rem;
+                margin: 1.5rem 0;
+            }
+            
+            .settings-btn, .sound-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+                top: 10px;
+            }
+            
+            .settings-btn {
+                left: 10px;
+            }
+            
+            .sound-btn {
+                right: 10px;
+            }
+            
+            .popup-content {
+                padding: 1.5rem;
+                max-height: 85vh;
+            }
+            
+            .popup-content .btn {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+                margin: 5px;
+            }
+            
+            .info-box {
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+            
+            .sensual-warning {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+            
+            ul {
+                font-size: 0.95rem;
+                line-height: 2;
+            }
+            
+            .progress-bar {
+                height: 8px;
+            }
+        }
+
+        /* מסכים קטנים מאוד */
+        @media (max-width: 360px) {
+            .title { font-size: 1.5rem; }
+            .subtitle { font-size: 0.9rem; }
+            .question-card { font-size: 0.95rem; padding: 1rem; }
+            .controls .btn { font-size: 0.75rem; padding: 10px 5px; }
+            .player-card { font-size: 0.8rem; padding: 0.5rem; }
+        }
+
+        /* גבהים נמוכים */
+        @media (max-height: 600px) {
+            .screen.active { padding: 5px; }
+            #game-screen.active { padding-top: 40px; }
+            .title { margin-bottom: 0.5rem; }
+            .card { margin: 0.3rem 0; padding: 1rem; }
+            .question-card { margin: 0.5rem 0; padding: 1rem; min-height: 80px; }
+            .controls { margin: 0.5rem 0; }
+            .timer { font-size: 3rem; margin: 1rem 0; }
+        }
+
+        /* תיקון למסך הסבר כדי שהכפתור יהיה נגיש */
+        @media (max-height: 750px) {
+            #rules-screen ul {
+                font-size: 1rem;
+                line-height: 1.8;
+            }
+            
+            #rules-screen .info-box {
+                padding: 1rem;
+                margin: 0.8rem 0;
+            }
+            
+            #rules-screen .card {
+                padding: 1.5rem;
+                margin: 0.5rem 0;
+            }
+            
+            #rules-screen .title {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-height: 650px) {
+            #rules-screen ul {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+            
+            #rules-screen .info-box {
+                padding: 0.8rem;
+                margin: 0.5rem 0;
+            }
+            
+            #rules-screen .sensual-warning {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+            
+            #rules-screen .title {
+                font-size: 1.8rem;
+                margin-bottom: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="synthwave-grid"></div>
+    
+    <button class="settings-btn interactive-icon" onclick="openSettings()" title="הגדרות">⚙️</button>
+    <button class="sound-btn interactive-icon" onclick="toggleSound()" title="הפעל/כבה צלילים" id="sound-toggle">🔊</button>
+
+    <div class="container">
+        <!-- מסך ברוכים הבאים -->
+        <div id="welcome-screen" class="screen active">
+            <div class="screen-content">
+                <div class="title">🎮 משחק הזיכרון הגדול 🎮</div>
+                <div class="subtitle">המשחק הזוגי שיבדק כמה טוב אתם מכירים אחד את השני!</div>
+                <div class="card">
+                    <p>ברוכים הבאים למשחק הכי מהנה לזוגות! <span class="interactive-icon">💕</span></p>
+                    <p>40 שאלות זיכרון מיוחדות שיעוררו זיכרונות מתוקים ויצחקו אתכם</p>
+                </div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn" onclick="nextScreen()"><span class="interactive-icon">➡️</span> בואו נתחיל!</button>
+            </div>
+        </div>
+
+        <!-- מסך הגדרת שחקנים -->
+        <div id="players-screen" class="screen">
+            <div class="screen-content">
+                <div class="title"><span class="interactive-icon">👫</span> פרטי השחקנים</div>
+                <div class="card">
+                    <div class="input-group">
+                        <label>שם השחקן הראשון:</label>
+                        <input type="text" id="player1-name" placeholder="הכנס שם">
+                    </div>
+                    <div class="input-group">
+                        <label>מגדר:</label>
+                        <select id="player1-gender">
+                            <option value="male">זכר</option>
+                            <option value="female">נקבה</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>שם השחקן השני:</label>
+                        <input type="text" id="player2-name" placeholder="הכנס שם">
+                    </div>
+                    <div class="input-group">
+                        <label>מגדר:</label>
+                        <select id="player2-gender">
+                            <option value="male">זכר</option>
+                            <option value="female">נקבה</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn" onclick="nextScreen()"><span class="interactive-icon">➡️</span> המשך</button>
+            </div>
+        </div>
+
+        <!-- מסך פרס -->
+        <div id="prize-screen" class="screen">
+            <div class="screen-content">
+                <div class="title"><span class="interactive-icon">🏆</span> על מה אתם מתחרים?</div>
+                <div class="card">
+                    <div class="input-group">
+                        <label>מה הפרס למנצח?</label>
+                        <input type="text" id="prize" placeholder="לדוגמה: מסאז' של 30 דקות...">
+                    </div>
+                </div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn" onclick="nextScreen()"><span class="interactive-icon">➡️</span> המשך</button>
+            </div>
+        </div>
+
+        <!-- מסך הסבר -->
+        <div id="rules-screen" class="screen">
+            <div class="screen-content">
+                <div class="title"><span class="interactive-icon">📋</span> איך המשחק עובד?</div>
+                <div class="card">
+                    <ul style="text-align: right; line-height: 2.2; list-style: none; font-size: 1.1rem;">
+                        <li><span class="interactive-icon">🎯</span> המשחק מורכב מ-6 חלקים עם 40 שאלות</li>
+                        <li><span class="interactive-icon">🗣️</span> אתם עונים על השאלות בקול</li>
+                        <li><span class="interactive-icon">✅</span> לוחצים על הכפתור של מי שהצליח</li>
+                        <li><span class="interactive-icon">💥</span> כל 5 פסילות = משימה מיוחדת</li>
+                        <li><span class="interactive-icon">⚠️</span> 3 פסילות רצופות = הודעת עידוד</li>
+                        <li><span class="interactive-icon">🏆</span> בסוף נגלה מי המנצח!</li>
+                    </ul>
+                    
+                    <div class="info-box">
+                        <div class="input-group">
+                            <label style="font-size: 1.2rem;">האם לכלול משימות חושניות במשחק?</label>
+                            <div style="display: flex; align-items: center; justify-content: center; margin: 1rem 0;">
+                                <span style="font-size: 1.1rem;">לא</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="sensual-tasks" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <span style="font-size: 1.1rem;">כן</span>
+                            </div>
+                            <div id="sensual-warning" class="sensual-warning">
+                                <span class="interactive-icon">⚠️</span> בחירה ב"כן" תוסיף משימות אינטימיות למשחק
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn" onclick="startCountdown()"><span class="interactive-icon">🎮</span> מוכנים? בואו נתחיל!</button>
+            </div>
+        </div>
+
+        <!-- מסך ספירה לאחור -->
+        <div id="countdown-screen" class="screen">
+            <div class="screen-content">
+                <div class="timer" id="countdown-timer">3</div>
+            </div>
+        </div>
+
+        <!-- מסך כותרת חלק -->
+        <div id="chapter-screen" class="screen">
+            <div class="screen-content">
+                <div class="chapter-title" id="chapter-title"></div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn" onclick="startQuestions()"><span class="interactive-icon">➡️</span> בואו נתחיל את החלק!</button>
+            </div>
+        </div>
+
+        <!-- מסך משחק -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="players-info">
+                    <div class="player-card">
+                        <div id="player1-display">שחקן 1</div>
+                        <div class="failures"><span class="interactive-icon">❌</span> <span id="player1-failures">0</span></div>
+                    </div>
+                    <div class="player-card">
+                        <div>שאלה <span id="current-question">1</span>/40</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill" style="width: 2.5%"></div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div id="player2-display">שחקן 2</div>
+                        <div class="failures"><span class="interactive-icon">❌</span> <span id="player2-failures">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="question-card" id="question-display">
+                    שאלה תופיע כאן
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <div class="controls">
+                    <button class="btn btn-success" onclick="answerQuestion(1)">
+                        <span class="interactive-icon">🏆</span> <span id="player1-btn">שחקן 1 ניצח</span>
+                    </button>
+                    <button class="btn btn-success" onclick="answerQuestion(2)">
+                        <span class="interactive-icon">🏆</span> <span id="player2-btn">שחקן 2 ניצח</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="answerQuestion('both')">
+                        <span class="interactive-icon">✅</span> שנינו הצלחנו
+                    </button>
+                    <button class="btn btn-danger" onclick="answerQuestion('none')">
+                        <span class="interactive-icon">❌</span> שנינו לא זכרנו
+                    </button>
+                </div>
+
+                <div class="secondary-controls">
+                    <button class="btn btn-warning" onclick="undoLastAction()"><span class="interactive-icon">🔁</span> בטל פעולה</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- מסך תוצאות -->
         <div id="results-screen" class="screen">
             <div class="screen-content">
-                <div class="title">🏆 תוצאות המשחק!</div>
+                <div class="title"><span class="interactive-icon">🏆</span> תוצאות המשחק!</div>
                 <div class="card">
                     <div id="final-results"></div>
                 </div>
             </div>
             <div class="screen-actions">
-                <button class="btn btn-share" onclick="shareResults()">📱 שתף בווטסאפ</button>
-                <button class="btn" onclick="restartGame()">🔄 משחק חדש</button>
+                <button class="btn btn-share" onclick="shareResults()"><span class="interactive-icon">📱</span> שתף בווטסאפ</button>
+                <button class="btn" onclick="restartGame()"><span class="interactive-icon">🔄</span> משחק חדש</button>
             </div>
         </div>
     </div>
@@ -18,7 +1095,7 @@
     <!-- פופאפ הגדרות -->
     <div id="settings-popup" class="popup">
         <div class="popup-content">
-            <div class="title">⚙️ הגדרות</div>
+            <div class="title"><span class="interactive-icon">⚙️</span> הגדרות</div>
             <div class="input-group">
                 <label>שם שחקן 1:</label>
                 <input type="text" id="settings-player1-name">
@@ -32,31 +1109,31 @@
                 <input type="text" id="settings-prize">
             </div>
             <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 15px;">
-                <p style="margin-bottom: 1rem;">💌 יצירת קשר:</p>
+                <p style="margin-bottom: 1rem;"><span class="interactive-icon">💌</span> יצירת קשר:</p>
                 <p>למשוב, הצעות או שאלות:</p>
                 <p style="direction: ltr;">contact@memorygame.com</p>
             </div>
-            <button class="btn btn-success" onclick="saveSettings()">💾 שמור שינויים</button>
-            <button class="btn btn-secondary" onclick="closeSettings()">❌ סגור</button>
+            <button class="btn btn-success" onclick="saveSettings()"><span class="interactive-icon">💾</span> שמור שינויים</button>
+            <button class="btn btn-secondary" onclick="closeSettings()"><span class="interactive-icon">❌</span> סגור</button>
         </div>
     </div>
 
     <!-- פופאפ הודעה על 5 פסילות -->
     <div id="failure-warning-popup" class="popup">
         <div class="popup-content">
-            <div class="title" style="color: #ff6b6b;">😱 אוי אוי אוי!</div>
+            <div class="title" style="color: #ff6b6b;"><span class="interactive-icon">😱</span> אוי אוי אוי!</div>
             <div id="failure-warning-content" style="font-size: 1.4rem; margin: 2rem 0;"></div>
-            <button class="btn btn-danger" onclick="showSensualTask()">😈 כן, אני מוכן/ה למשימה!</button>
-            <button class="btn btn-secondary" onclick="skipTask()">😅 אולי פעם הבאה...</button>
+            <button class="btn btn-danger" onclick="showSensualTask()"><span class="interactive-icon">😈</span> כן, אני מוכן/ה למשימה!</button>
+            <button class="btn btn-secondary" onclick="skipTask()"><span class="interactive-icon">😅</span> אולי פעם הבאה...</button>
         </div>
     </div>
 
     <!-- פופאפ למשימה חושנית -->
     <div id="task-popup" class="popup">
         <div class="popup-content">
-            <div class="title">💕 המשימה שלך!</div>
+            <div class="title"><span class="interactive-icon">💕</span> המשימה שלך!</div>
             <div id="task-content" style="font-size: 1.3rem; margin: 2rem 0;"></div>
-            <button class="btn btn-success" onclick="completeTask()">✅ ביצעתי את המשימה</button>
+            <button class="btn btn-success" onclick="completeTask()"><span class="interactive-icon">✅</span> ביצעתי את המשימה</button>
         </div>
     </div>
 
@@ -64,11 +1141,114 @@
     <div id="message-popup" class="popup">
         <div class="popup-content">
             <div id="message-content"></div>
-            <button class="btn" onclick="closeMessagePopup()">✅ הבנתי</button>
+            <button class="btn" onclick="closeMessagePopup()"><span class="interactive-icon">✅</span> הבנתי</button>
         </div>
     </div>
 
     <script>
+        // משתני מערכת הצלילים
+        let soundEnabled = true;
+        let audioContext = null;
+        let screenTransitionNumber = 0;
+
+        // יצירת צלילים
+        function initializeAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.log('Web Audio API not supported');
+                soundEnabled = false;
+            }
+        }
+
+        function playTone(frequency, duration, type = 'sine', volume = 0.1) {
+            if (!soundEnabled || !audioContext) return;
+            
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.type = type;
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                console.log('Error playing sound:', e);
+            }
+        }
+
+        function playButtonClick() {
+            playTone(800, 0.1, 'square', 0.05);
+        }
+
+        function playSuccess() {
+            setTimeout(() => playTone(523.25, 0.15), 0);    // C5
+            setTimeout(() => playTone(659.25, 0.15), 100);  // E5
+            setTimeout(() => playTone(783.99, 0.3), 200);   // G5
+        }
+
+        function playError() {
+            playTone(220, 0.3, 'sawtooth', 0.1);
+        }
+
+        function playTransition() {
+            const transitions = [
+                () => {
+                    playTone(440, 0.1);
+                    setTimeout(() => playTone(554.37, 0.1), 100);
+                },
+                () => {
+                    playTone(659.25, 0.15);
+                    setTimeout(() => playTone(783.99, 0.15), 100);
+                },
+                () => {
+                    playTone(523.25, 0.1);
+                    setTimeout(() => playTone(659.25, 0.1), 80);
+                    setTimeout(() => playTone(783.99, 0.1), 160);
+                }
+            ];
+            
+            transitions[screenTransitionNumber % transitions.length]();
+            screenTransitionNumber++;
+        }
+
+        function playCountdown() {
+            playTone(800, 0.2, 'square', 0.08);
+        }
+
+        function playVictory() {
+            const melody = [523.25, 659.25, 783.99, 1046.5]; // C-E-G-C
+            melody.forEach((freq, index) => {
+                setTimeout(() => playTone(freq, 0.3), index * 150);
+            });
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const soundBtn = document.getElementById('sound-toggle');
+            
+            if (soundEnabled) {
+                soundBtn.textContent = '🔊';
+                soundBtn.classList.remove('muted');
+                soundBtn.title = 'כבה צלילים';
+                if (!audioContext) initializeAudio();
+                playButtonClick();
+            } else {
+                soundBtn.textContent = '🔇';
+                soundBtn.classList.add('muted');
+                soundBtn.title = 'הפעל צלילים';
+            }
+        }
+
+        // משתני המשחק
         let gameState = {
             currentScreen: 0,
             currentQuestion: 0,
@@ -204,14 +1384,31 @@
                 .replace(/PLAYER2/g, gameState.player2.name);
         }
 
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
+        function showScreen(screenId, animation = 'fadeInUp') {
+            const currentScreen = document.querySelector('.screen.active');
+            const nextScreen = document.getElementById(screenId);
+            
+            if (currentScreen) {
+                currentScreen.classList.remove('active');
+            }
+            
+            nextScreen.classList.add('active');
+            
+            // הוספת אנימציה
+            nextScreen.classList.remove('slide-right', 'slide-left', 'zoom');
+            if (animation === 'slideRight') {
+                nextScreen.classList.add('slide-right');
+            } else if (animation === 'slideLeft') {
+                nextScreen.classList.add('slide-left');
+            } else if (animation === 'zoom') {
+                nextScreen.classList.add('zoom');
+            }
+            
+            playTransition();
         }
 
         function nextScreen() {
+            playButtonClick();
             const screens = ['welcome-screen', 'players-screen', 'prize-screen', 'rules-screen'];
             gameState.currentScreen++;
             
@@ -224,7 +1421,7 @@
             }
 
             if (gameState.currentScreen < screens.length) {
-                showScreen(screens[gameState.currentScreen]);
+                showScreen(screens[gameState.currentScreen], 'slideRight');
             }
         }
 
@@ -233,6 +1430,7 @@
             const player2Name = document.getElementById('player2-name').value.trim();
             
             if (!player1Name || !player2Name) {
+                playError();
                 alert('אנא הכנס את שמות השחקנים');
                 gameState.currentScreen--;
                 return;
@@ -247,26 +1445,31 @@
             document.getElementById('player2-display').textContent = player2Name;
             updateButtonTexts();
 
-            showScreen('prize-screen');
+            playSuccess();
+            showScreen('prize-screen', 'slideRight');
         }
 
         function savePrizeInfo() {
             gameState.prize = document.getElementById('prize').value.trim() || 'הנצחון!';
-            showScreen('rules-screen');
+            playSuccess();
+            showScreen('rules-screen', 'slideRight');
         }
 
         function startCountdown() {
+            playButtonClick();
             gameState.sensualTasks = document.getElementById('sensual-tasks').checked;
-            showScreen('countdown-screen');
+            showScreen('countdown-screen', 'zoom');
             let count = 3;
             const timer = document.getElementById('countdown-timer');
             
             const countdown = setInterval(() => {
                 if (count > 0) {
                     timer.textContent = count;
+                    playCountdown();
                     count--;
                 } else if (count === 0) {
                     timer.textContent = 'בהצלחה! 🎮';
+                    playVictory();
                     count--;
                 } else {
                     clearInterval(countdown);
@@ -284,14 +1487,15 @@
         function showChapter() {
             if (gameState.currentChapter < chapters.length) {
                 document.getElementById('chapter-title').textContent = chapters[gameState.currentChapter].title;
-                showScreen('chapter-screen');
+                showScreen('chapter-screen', 'zoom');
             } else {
                 showResults();
             }
         }
 
         function startQuestions() {
-            showScreen('game-screen');
+            playButtonClick();
+            showScreen('game-screen', 'slideLeft');
             displayCurrentQuestion();
         }
 
@@ -333,6 +1537,8 @@
         }
 
         function answerQuestion(answer) {
+            playButtonClick();
+            
             if (!gameState.hasUsedUndo) {
                 gameState.lastAction = {
                     question: gameState.currentQuestion,
@@ -354,23 +1560,27 @@
                 gameState.player2.failures++;
                 gameState.player2.consecutiveFailures++;
                 if (gameState.player2.failures === 5) willHaveFiveFailures = true;
+                playSuccess();
             } else if (answer === 2) {
                 gameState.player2.score++;
                 gameState.player2.consecutiveFailures = 0;
                 gameState.player1.failures++;
                 gameState.player1.consecutiveFailures++;
                 if (gameState.player1.failures === 5) willHaveFiveFailures = true;
+                playSuccess();
             } else if (answer === 'both') {
                 gameState.player1.score++;
                 gameState.player2.score++;
                 gameState.player1.consecutiveFailures = 0;
                 gameState.player2.consecutiveFailures = 0;
+                playVictory();
             } else if (answer === 'none') {
                 gameState.player1.failures++;
                 gameState.player2.failures++;
                 gameState.player1.consecutiveFailures++;
                 gameState.player2.consecutiveFailures++;
                 if (gameState.player1.failures === 5 || gameState.player2.failures === 5) willHaveFiveFailures = true;
+                playError();
             }
 
             if (!willHaveFiveFailures) {
@@ -473,6 +1683,7 @@
         }
 
         function showSensualTask() {
+            playButtonClick();
             document.getElementById('failure-warning-popup').style.display = 'none';
             
             let task = sensualTasks[gameState.currentTaskIndex];
@@ -507,10 +1718,13 @@
         }
 
         function skipTask() {
+            playButtonClick();
             document.getElementById('failure-warning-popup').style.display = 'none';
         }
 
         function completeTask() {
+            playButtonClick();
+            playSuccess();
             document.getElementById('task-popup').style.display = 'none';
         }
 
@@ -524,16 +1738,21 @@
         }
 
         function closeMessagePopup() {
+            playButtonClick();
             document.getElementById('message-popup').style.display = 'none';
         }
 
         function undoLastAction() {
+            playButtonClick();
+            
             if (!gameState.lastAction) {
+                playError();
                 showMessage('אין פעולה לביטול');
                 return;
             }
 
             if (gameState.hasUsedUndo) {
+                playError();
                 showMessage('ניתן לבטל רק פעם אחת');
                 return;
             }
@@ -549,6 +1768,7 @@
             
             gameState.hasUsedUndo = true;
             displayCurrentQuestion();
+            playSuccess();
             showMessage('הפעולה בוטלה');
         }
 
@@ -583,17 +1803,20 @@
                 winner = gameState.player1.name;
                 winnerGender = gameState.player1.gender;
                 createConfetti();
+                playVictory();
             } else if (player2Score > player1Score) {
                 winner = gameState.player2.name;
                 winnerGender = gameState.player2.gender;
                 createConfetti();
+                playVictory();
             } else {
                 winner = null;
+                playVictory();
             }
 
             let resultsHTML = `
                 <div style="text-align: center;">
-                    <h2 style="font-size: 2rem; margin-bottom: 3rem;">📊 תוצאות סופיות</h2>
+                    <h2 style="font-size: 2rem; margin-bottom: 3rem;"><span class="interactive-icon">📊</span> תוצאות סופיות</h2>
                     <div style="display: flex; justify-content: space-around; margin: 3rem 0; flex-wrap: wrap;">
                         <div style="margin: 2rem; min-width: 200px;">
                             <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">${gameState.player1.name}</h3>
@@ -612,7 +1835,7 @@
                 const winnerVerb = getGenderText(winnerGender, 'ניצח', 'ניצחה');
                 resultsHTML += `
                     <div style="background: linear-gradient(45deg, #ffeaa7, #fab1a0); color: #333; padding: 3rem; border-radius: 25px; margin: 3rem 0; animation: pulse 2s infinite;">
-                        <h3 style="font-size: 2rem; margin-bottom: 1rem;">🏆 ${winner} ${winnerVerb}!</h3>
+                        <h3 style="font-size: 2rem; margin-bottom: 1rem;"><span class="interactive-icon">🏆</span> ${winner} ${winnerVerb}!</h3>
                         <p style="font-size: 1.4rem; margin-top: 1.5rem;">
                             הפרס שלך: <strong>${gameState.prize}</strong>
                         </p>
@@ -621,7 +1844,7 @@
             } else {
                 resultsHTML += `
                     <div style="background: linear-gradient(45deg, #74b9ff, #0984e3); padding: 3rem; border-radius: 25px; margin: 3rem 0; animation: pulse 2s infinite;">
-                        <h3 style="font-size: 2rem; margin-bottom: 1rem;">🤝 תיקו!</h3>
+                        <h3 style="font-size: 2rem; margin-bottom: 1rem;"><span class="interactive-icon">🤝</span> תיקו!</h3>
                         <p style="font-size: 1.4rem; margin-top: 1.5rem;">
                             שניכם זוכים ב: <strong>${gameState.prize}</strong>
                         </p>
@@ -631,17 +1854,19 @@
 
             resultsHTML += `
                     <div style="margin-top: 3rem; font-size: 1.2rem; line-height: 1.8;">
-                        <p>💕 תודה שיחקתם במשחק הזיכרון הגדול!</p>
+                        <p><span class="interactive-icon">💕</span> תודה שיחקתם במשחק הזיכרון הגדול!</p>
                         <p>איזה כיף לראות כמה אתם מכירים אחד את השני!</p>
                     </div>
                 </div>
             `;
 
             document.getElementById('final-results').innerHTML = resultsHTML;
-            showScreen('results-screen');
+            showScreen('results-screen', 'zoom');
         }
 
         function shareResults() {
+            playButtonClick();
+            
             const player1Score = gameState.player1.score;
             const player2Score = gameState.player2.score;
             let winner = '';
@@ -668,6 +1893,8 @@
         }
 
         function restartGame() {
+            playButtonClick();
+            
             gameState = {
                 currentScreen: 0,
                 currentQuestion: 0,
@@ -687,10 +1914,11 @@
             document.getElementById('prize').value = '';
             document.getElementById('sensual-tasks').checked = true;
 
-            showScreen('welcome-screen');
+            showScreen('welcome-screen', 'zoom');
         }
 
         function openSettings() {
+            playButtonClick();
             document.getElementById('settings-player1-name').value = gameState.player1.name;
             document.getElementById('settings-player2-name').value = gameState.player2.name;
             document.getElementById('settings-prize').value = gameState.prize;
@@ -698,6 +1926,7 @@
         }
 
         function saveSettings() {
+            playButtonClick();
             gameState.player1.name = document.getElementById('settings-player1-name').value.trim() || gameState.player1.name;
             gameState.player2.name = document.getElementById('settings-player2-name').value.trim() || gameState.player2.name;
             gameState.prize = document.getElementById('settings-prize').value.trim() || gameState.prize;
@@ -707,25 +1936,32 @@
             updateButtonTexts();
             
             closeSettings();
+            playSuccess();
             showMessage('ההגדרות נשמרו בהצלחה!');
         }
 
         function closeSettings() {
+            playButtonClick();
             document.getElementById('settings-popup').style.display = 'none';
         }
 
+        // אתחול המערכת
         document.addEventListener('DOMContentLoaded', function() {
+            // אתחול האודיו
+            initializeAudio();
+            
+            // הגדרת מתג המשימות החושניות
             const sensualToggle = document.getElementById('sensual-tasks');
             const warning = document.getElementById('sensual-warning');
             
             function updateSensualWarning() {
                 if (sensualToggle.checked) {
                     warning.style.display = 'block';
-                    warning.innerHTML = '⚠️ בחירה ב"כן" תוסיף משימות אינטימיות למשחק';
+                    warning.innerHTML = '<span class="interactive-icon">⚠️</span> בחירה ב"כן" תוסיף משימות אינטימיות למשחק';
                     warning.className = 'sensual-warning';
                 } else {
                     warning.style.display = 'block';
-                    warning.innerHTML = '✅ לא יהיו משימות אינטימיות במשחק';
+                    warning.innerHTML = '<span class="interactive-icon">✅</span> לא יהיו משימות אינטימיות במשחק';
                     warning.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
                     warning.style.animation = 'none';
                 }
@@ -733,6 +1969,13 @@
             
             sensualToggle.addEventListener('change', updateSensualWarning);
             updateSensualWarning();
+
+            // הוספת אפקטים קוליים לכל הכפתורים
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('.btn') || e.target.closest('.btn')) {
+                    playButtonClick();
+                }
+            });
         });
 
         // מניעת גלילה בטעות במובייל
@@ -742,842 +1985,17 @@
                 e.preventDefault();
             }
         }, { passive: false });
+
+        // טיפול באירועי מקלדת
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const activeScreen = document.querySelector('.screen.active');
+                const nextButton = activeScreen.querySelector('.btn');
+                if (nextButton && !nextButton.disabled) {
+                    nextButton.click();
+                }
+            }
+        });
     </script>
 </body>
-</html><!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>משחק הזיכרון הגדול</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100dvh;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(180deg, #0a0a23 0%, #1a1a3a 30%, #2d1b69 60%, #8b2b9b 100%);
-            color: white;
-            text-align: center;
-            position: relative;
-        }
-
-        /* אנימציית רקע */
-        .synthwave-grid {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%) perspective(500px) rotateX(60deg);
-            width: 200%;
-            height: 50vh;
-            background-image: 
-                linear-gradient(rgba(255, 0, 150, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 0, 150, 0.3) 1px, transparent 1px);
-            background-size: 40px 40px;
-            animation: gridMove 10s linear infinite;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        @keyframes gridMove {
-            0% { transform: translateX(-50%) perspective(500px) rotateX(60deg) translateZ(0); }
-            100% { transform: translateX(-50%) perspective(500px) rotateX(60deg) translateZ(40px); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes confetti {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-
-        .container {
-            width: 100vw;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0;
-            overflow: hidden;
-            position: relative;
-            z-index: 1;
-        }
-
-        .screen {
-            display: none !important;
-            width: 100%;
-            height: 100%;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .screen.active {
-            display: flex !important;
-            flex-direction: column;
-            align-items: center;
-            height: 100dvh;
-            overflow: hidden;
-            padding: 20px;
-        }
-
-        /* מבנה כללי למסכים רגילים */
-        .screen-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 900px;
-        }
-
-        .screen-actions {
-            padding: 20px 0;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        /* מסך המשחק - מבנה שונה */
-        #game-screen.active {
-            justify-content: flex-start;
-            padding-top: 60px;
-        }
-
-        #game-screen .game-header {
-            width: 100%;
-            max-width: 900px;
-        }
-
-        #game-screen .game-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 900px;
-        }
-
-        #game-screen .game-controls {
-            padding: 20px 0;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .title {
-            font-size: clamp(2rem, 6vw, 3rem);
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-            background: linear-gradient(45deg, #fff, #f0f0f0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: pulse 3s infinite;
-        }
-
-        .subtitle {
-            font-size: clamp(1rem, 3vw, 1.3rem);
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
-        }
-
-        .card {
-            background: rgba(26, 0, 51, 0.3);
-            backdrop-filter: blur(15px);
-            border-radius: 25px;
-            padding: clamp(1.5rem, 4vw, 2.5rem);
-            margin: 1rem 0;
-            border: 2px solid #ff0084;
-            box-shadow: 
-                0 12px 40px rgba(0, 0, 0, 0.4),
-                0 0 30px rgba(255, 0, 132, 0.3),
-                inset 0 0 30px rgba(0, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .btn {
-            background: linear-gradient(45deg, #ff0084, #00ffff);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
-            font-weight: bold;
-            cursor: pointer;
-            margin: 10px auto;
-            transition: all 0.4s ease;
-            box-shadow: 
-                0 6px 20px rgba(0, 0, 0, 0.3),
-                0 0 20px rgba(255, 0, 132, 0.5);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-            display: block;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.4),
-                0 0 30px rgba(255, 0, 132, 0.8);
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-        }
-
-        .btn-success {
-            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
-        }
-
-        .btn-danger {
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
-        }
-
-        .btn-warning {
-            background: linear-gradient(45deg, #f093fb, #f5576c);
-        }
-
-        .btn-share {
-            background: linear-gradient(45deg, #25D366, #128C7E);
-        }
-
-        .input-group {
-            margin: 1rem 0;
-            text-align: center;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-            font-size: clamp(1rem, 2.5vw, 1.1rem);
-        }
-
-        .input-group input, .input-group select {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px;
-            border-radius: 20px;
-            border: none;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            transition: all 0.3s ease;
-            margin: 0 auto;
-            display: block;
-        }
-
-        .players-info {
-            display: flex;
-            justify-content: space-between;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .player-card {
-            flex: 1;
-            min-width: 140px;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            text-align: center;
-        }
-
-        .player-card:nth-child(2) {
-            flex: 1.5;
-        }
-
-        .failures {
-            color: #ff6b6b;
-            font-weight: bold;
-            font-size: 1rem;
-            margin-top: 5px;
-        }
-
-        .question-card {
-            background: rgba(26, 0, 51, 0.4);
-            border-radius: 30px;
-            padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
-            margin: 1.5rem 0;
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
-            line-height: 1.8;
-            border: 3px solid #00ffff;
-            box-shadow: 
-                0 15px 50px rgba(0, 0, 0, 0.4),
-                0 0 40px rgba(0, 255, 255, 0.4),
-                inset 0 0 40px rgba(255, 0, 132, 0.1);
-            min-height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
-            width: 100%;
-            max-width: 700px;
-        }
-
-        .chapter-title {
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
-            font-weight: bold;
-            margin: 2rem 0;
-            text-align: center;
-            background: linear-gradient(45deg, #ffeaa7, #fab1a0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: pulse 2s infinite;
-        }
-
-        .timer {
-            font-size: clamp(5rem, 20vw, 10rem);
-            font-weight: bold;
-            margin: 2rem 0;
-            text-shadow: 5px 5px 10px rgba(0,0,0,0.7);
-            animation: pulse 1s infinite;
-        }
-
-        .controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 1.5rem auto;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .controls .btn {
-            width: 100%;
-            padding: 15px;
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-            margin: 0;
-            display: inline-block;
-        }
-
-        .secondary-controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin: 1rem auto;
-            max-width: 600px;
-        }
-
-        .secondary-controls .btn {
-            display: inline-block;
-            margin: 0;
-            font-size: clamp(0.8rem, 2vw, 0.9rem);
-            padding: 10px 20px;
-        }
-
-        .popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .popup-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: clamp(2rem, 5vw, 3rem);
-            border-radius: 30px;
-            text-align: center;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .popup-content .btn {
-            display: inline-block;
-            margin: 10px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            margin: 0.5rem 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            border-radius: 6px;
-            transition: width 0.8s ease;
-        }
-
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 70px;
-            height: 40px;
-            margin: 0 15px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 40px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 32px;
-            width: 32px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(30px);
-        }
-
-        .score-animation {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #4ecdc4;
-            transition: all 1s ease;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .celebration {
-            animation: pulse 0.5s infinite alternate;
-        }
-
-        .info-box {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .sensual-warning {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
-            color: white;
-            padding: 1rem;
-            border-radius: 15px;
-            margin: 1rem 0;
-            font-weight: bold;
-            animation: pulse 2s infinite;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-        }
-
-        .settings-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 100;
-            transition: all 0.3s ease;
-        }
-
-        .settings-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #ff0084;
-            animation: confetti 3s linear;
-            z-index: 1001;
-        }
-
-        .confetti:nth-child(even) {
-            background: #00ffff;
-            animation-delay: 0.5s;
-        }
-
-        .confetti:nth-child(3n) {
-            background: #ffeaa7;
-            animation-delay: 0.3s;
-        }
-
-        /* אופטימיזציה למובייל */
-        @media (max-width: 768px) {
-            .synthwave-grid {
-                display: none;
-            }
-            
-            .screen.active {
-                padding: 10px;
-            }
-            
-            #game-screen.active {
-                padding-top: 50px;
-            }
-            
-            .title { 
-                font-size: 1.8rem;
-                margin-bottom: 1rem;
-            }
-            
-            .subtitle { 
-                font-size: 1rem;
-                margin-bottom: 1rem;
-            }
-            
-            .card {
-                padding: 1.2rem;
-                margin: 0.5rem 0;
-            }
-            
-            .players-info { 
-                gap: 5px;
-            }
-            
-            .player-card {
-                padding: 0.7rem;
-                min-width: 100px;
-                font-size: 0.9rem;
-            }
-            
-            .question-card { 
-                font-size: 1.1rem;
-                padding: 1.5rem 1rem;
-                margin: 1rem 0;
-                min-height: 120px;
-            }
-            
-            .controls { 
-                gap: 8px;
-                margin: 1rem 0;
-            }
-            
-            .controls .btn {
-                padding: 12px 8px;
-                font-size: 0.85rem;
-            }
-            
-            .secondary-controls {
-                gap: 8px;
-                margin: 0.5rem 0;
-            }
-            
-            .secondary-controls .btn {
-                font-size: 0.75rem;
-                padding: 8px 15px;
-            }
-            
-            .btn { 
-                font-size: 1rem;
-                padding: 12px 25px;
-            }
-            
-            .timer { 
-                font-size: 4rem;
-                margin: 1.5rem 0;
-            }
-            
-            .chapter-title {
-                font-size: 1.5rem;
-                margin: 1.5rem 0;
-            }
-            
-            .settings-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-                top: 10px;
-                left: 10px;
-            }
-            
-            .popup-content {
-                padding: 1.5rem;
-                max-height: 85vh;
-            }
-            
-            .popup-content .btn {
-                font-size: 0.9rem;
-                padding: 10px 20px;
-                margin: 5px;
-            }
-            
-            .info-box {
-                padding: 1rem;
-                margin: 1rem 0;
-            }
-            
-            .sensual-warning {
-                padding: 0.8rem;
-                font-size: 0.85rem;
-            }
-            
-            ul {
-                font-size: 0.95rem;
-                line-height: 2;
-            }
-            
-            .progress-bar {
-                height: 8px;
-            }
-        }
-
-        /* מסכים קטנים מאוד */
-        @media (max-width: 360px) {
-            .title { font-size: 1.5rem; }
-            .subtitle { font-size: 0.9rem; }
-            .question-card { font-size: 0.95rem; padding: 1rem; }
-            .controls .btn { font-size: 0.75rem; padding: 10px 5px; }
-            .player-card { font-size: 0.8rem; padding: 0.5rem; }
-        }
-
-        /* גבהים נמוכים */
-        @media (max-height: 600px) {
-            .screen.active { padding: 5px; }
-            #game-screen.active { padding-top: 40px; }
-            .title { margin-bottom: 0.5rem; }
-            .card { margin: 0.3rem 0; padding: 1rem; }
-            .question-card { margin: 0.5rem 0; padding: 1rem; min-height: 80px; }
-            .controls { margin: 0.5rem 0; }
-            .timer { font-size: 3rem; margin: 1rem 0; }
-        }
-    </style>
-</head>
-<body>
-    <div class="synthwave-grid"></div>
-    
-    <button class="settings-btn" onclick="openSettings()" title="הגדרות">⚙️</button>
-
-    <div class="container">
-        <!-- מסך ברוכים הבאים -->
-        <div id="welcome-screen" class="screen active">
-            <div class="screen-content">
-                <div class="title">🎮 משחק הזיכרון הגדול 🎮</div>
-                <div class="subtitle">המשחק הזוגי שיבדק כמה טוב אתם מכירים אחד את השני!</div>
-                <div class="card">
-                    <p>ברוכים הבאים למשחק הכי מהנה לזוגות! 💕</p>
-                    <p>40 שאלות זיכרון מיוחדות שיעוררו זיכרונות מתוקים ויצחקו אתכם</p>
-                </div>
-            </div>
-            <div class="screen-actions">
-                <button class="btn" onclick="nextScreen()">➡️ בואו נתחיל!</button>
-            </div>
-        </div>
-
-        <!-- מסך הגדרת שחקנים -->
-        <div id="players-screen" class="screen">
-            <div class="screen-content">
-                <div class="title">👫 פרטי השחקנים</div>
-                <div class="card">
-                    <div class="input-group">
-                        <label>שם השחקן הראשון:</label>
-                        <input type="text" id="player1-name" placeholder="הכנס שם">
-                    </div>
-                    <div class="input-group">
-                        <label>מגדר:</label>
-                        <select id="player1-gender">
-                            <option value="male">זכר</option>
-                            <option value="female">נקבה</option>
-                        </select>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label>שם השחקן השני:</label>
-                        <input type="text" id="player2-name" placeholder="הכנס שם">
-                    </div>
-                    <div class="input-group">
-                        <label>מגדר:</label>
-                        <select id="player2-gender">
-                            <option value="male">זכר</option>
-                            <option value="female">נקבה</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="screen-actions">
-                <button class="btn" onclick="nextScreen()">➡️ המשך</button>
-            </div>
-        </div>
-
-        <!-- מסך פרס -->
-        <div id="prize-screen" class="screen">
-            <div class="screen-content">
-                <div class="title">🏆 על מה אתם מתחרים?</div>
-                <div class="card">
-                    <div class="input-group">
-                        <label>מה הפרס למנצח?</label>
-                        <input type="text" id="prize" placeholder="לדוגמה: מסאז' של 30 דקות...">
-                    </div>
-                </div>
-            </div>
-            <div class="screen-actions">
-                <button class="btn" onclick="nextScreen()">➡️ המשך</button>
-            </div>
-        </div>
-
-        <!-- מסך הסבר -->
-        <div id="rules-screen" class="screen">
-            <div class="screen-content">
-                <div class="title">📋 איך המשחק עובד?</div>
-                <div class="card">
-                    <ul style="text-align: right; line-height: 2.2; list-style: none; font-size: 1.1rem;">
-                        <li>🎯 המשחק מורכב מ-6 חלקים עם 40 שאלות</li>
-                        <li>🗣️ אתם עונים על השאלות בקול</li>
-                        <li>✅ לוחצים על הכפתור של מי שהצליח</li>
-                        <li>💥 כל 5 פסילות = משימה מיוחדת</li>
-                        <li>⚠️ 3 פסילות רצופות = הודעת עידוד</li>
-                        <li>🏆 בסוף נגלה מי המנצח!</li>
-                    </ul>
-                    
-                    <div class="info-box">
-                        <div class="input-group">
-                            <label style="font-size: 1.2rem;">האם לכלול משימות חושניות במשחק?</label>
-                            <div style="display: flex; align-items: center; justify-content: center; margin: 1rem 0;">
-                                <span style="font-size: 1.1rem;">לא</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="sensual-tasks" checked>
-                                    <span class="slider"></span>
-                                </label>
-                                <span style="font-size: 1.1rem;">כן</span>
-                            </div>
-                            <div id="sensual-warning" class="sensual-warning">
-                                ⚠️ בחירה ב"כן" תוסיף משימות אינטימיות למשחק
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="screen-actions">
-                <button class="btn" onclick="startCountdown()">🎮 מוכנים? בואו נתחיל!</button>
-            </div>
-        </div>
-
-        <!-- מסך ספירה לאחור -->
-        <div id="countdown-screen" class="screen">
-            <div class="screen-content">
-                <div class="timer" id="countdown-timer">3</div>
-            </div>
-        </div>
-
-        <!-- מסך כותרת חלק -->
-        <div id="chapter-screen" class="screen">
-            <div class="screen-content">
-                <div class="chapter-title" id="chapter-title"></div>
-            </div>
-            <div class="screen-actions">
-                <button class="btn" onclick="startQuestions()">➡️ בואו נתחיל את החלק!</button>
-            </div>
-        </div>
-
-        <!-- מסך משחק -->
-        <div id="game-screen" class="screen">
-            <div class="game-header">
-                <div class="players-info">
-                    <div class="player-card">
-                        <div id="player1-display">שחקן 1</div>
-                        <div class="failures">❌ <span id="player1-failures">0</span></div>
-                    </div>
-                    <div class="player-card">
-                        <div>שאלה <span id="current-question">1</span>/40</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-fill" style="width: 2.5%"></div>
-                        </div>
-                    </div>
-                    <div class="player-card">
-                        <div id="player2-display">שחקן 2</div>
-                        <div class="failures">❌ <span id="player2-failures">0</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="game-content">
-                <div class="question-card" id="question-display">
-                    שאלה תופיע כאן
-                </div>
-            </div>
-
-            <div class="game-controls">
-                <div class="controls">
-                    <button class="btn btn-success" onclick="answerQuestion(1)">
-                        🏆 <span id="player1-btn">שחקן 1 ניצח</span>
-                    </button>
-                    <button class="btn btn-success" onclick="answerQuestion(2)">
-                        🏆 <span id="player2-btn">שחקן 2 ניצח</span>
-                    </button>
-                    <button class="btn btn-secondary" onclick="answerQuestion('both')">
-                        ✅ שנינו הצלחנו
-                    </button>
-                    <button class="btn btn-danger" onclick="answerQuestion('none')">
-                        ❌ שנינו לא זכרנו
-                    </button>
-                </div>
-
-                <div class="secondary-controls">
-                    <button class="btn btn-warning" onclick="undoLastAction()">🔁 בטל פעולה</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- מסך תוצאות -->
-        <div id="results-screen" class="screen">
-            <div class="screen-content">
-                <div class="title">🏆
+</html>
