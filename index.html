@@ -1146,6 +1146,7 @@
     </div>
 
     <script>
+
         // משתני מערכת הצלילים
         let soundEnabled = true;
         let audioContext = null;
@@ -1292,10 +1293,10 @@
                 title: "👥 חלק 3: מפגשים חברתיים",
                 questions: [
                     "איפה נפגשתם לראשונה עם המשפחה של PLAYER1?",
+                    "מתי אירחתם אנשים בפעם האחרונה ומי היה?",
                     "מתי עשיתם ערב חג ראשון אצל המשפחה של PLAYER2?",
-                    "איפה פגשתם לראשונה את החברים הכי קרובים של PLAYER1?",
                     "מתי הייתה הפעם האחרונה שנפגשתם עם חברים משותפים – ואצל מי זה היה?",
-                    "מתי אירחתם (או התארחתם אצל) אנשים בפעם האחרונה – ומי היה?",
+                    "איפה פגשתם לראשונה את החברים הכי קרובים של PLAYER1?",
                     "מה היה האירוע החברתי האחרון שהייתם בו יחד – ואיפה זה היה?"
                 ]
             },
@@ -1368,6 +1369,10 @@
 
         function getGenderVerb(gender, maleVerb, femaleVerb) {
             return gender === 'male' ? maleVerb : femaleVerb;
+        }
+
+        function getGenderAddress(gender, maleAddress, femaleAddress) {
+            return gender === 'male' ? maleAddress : femaleAddress;
         }
 
         function updateButtonTexts() {
@@ -1608,9 +1613,9 @@
 
             if (messagePlayer) {
                 const messageType = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
-                let message = messageType.message
-                    .replace(/PLAYER/g, messagePlayer.name)
-                    .replace(/OTHER_PLAYER/g, otherPlayer.name);
+               let message = messageType.message
+    .replace(/OTHER_PLAYER/g, otherPlayer.name)  // ← קודם את זה!
+    .replace(/PLAYER/g, messagePlayer.name);     // ← ואח"כ את זה!
 
                 if (messagePlayer.gender === 'female') {
                     message = message
@@ -1625,6 +1630,18 @@
                         .replace(/לו\/לה/g, 'לה')
                         .replace(/הוא\/היא/g, 'היא')
                         .replace(/יחזור\/תחזור/g, 'תחזור');
+                } else {
+                    message = message
+                        .replace(/את\/ה/g, 'אתה')
+                        .replace(/תתייאש\/י/g, 'תתייאש')
+                        .replace(/חוזר\/ת/g, 'חוזר')
+                        .replace(/זוכר\/ת/g, 'זוכר')
+                        .replace(/יודע\/ת/g, 'יודע')
+                        .replace(/צריך\/ה/g, 'צריך')
+                        .replace(/תראה\/י/g, 'תראה')
+                        .replace(/לו\/לה/g, 'לו')
+                        .replace(/הוא\/היא/g, 'הוא')
+                        .replace(/יחזור\/תחזור/g, 'יחזור');
                 }
 
                 if (otherPlayer.gender === 'female') {
@@ -1635,7 +1652,18 @@
                         .replace(/תיזהר\/י/g, 'תיזהרי')
                         .replace(/התאהב\/ה/g, 'התאהבה')
                         .replace(/תן\/י/g, 'תני')
-                        .replace(/תרחם\/י/g, 'תרחמי');
+                        .replace(/תרחם\/י/g, 'תרחמי')
+                        .replace(/זוכר\/ת/g, 'זוכרת');
+                } else {
+                    message = message
+                        .replace(/תתכונן\/י/g, 'תתכונן')
+                        .replace(/מדהים\/ה/g, 'מדהים')
+                        .replace(/מוביל\/ה/g, 'מוביל')
+                        .replace(/תיזהר\/י/g, 'תיזהר')
+                        .replace(/התאהב\/ה/g, 'התאהב')
+                        .replace(/תן\/י/g, 'תן')
+                        .replace(/תרחם\/י/g, 'תרחם')
+                        .replace(/זוכר\/ת/g, 'זוכר');
                 }
 
                 showMessage(message);
@@ -1669,19 +1697,22 @@
             }
         }
 
-        function showFailureWarning(player) {
-            const genderReady = getGenderText(player.gender, 'מוכן', 'מוכנה');
-            const genderText = getGenderText(player.gender, 'הגעת', 'הגעת');
-            
-            document.getElementById('failure-warning-content').innerHTML = `
-                <strong>${player.name}, ${genderText} ל-5 פסילות!</strong><br><br>
-                לכן תקבלו משימה מינית במיוחד...<br><br>
-                ${genderReady} למשימה שלך? 😏
-            `;
-            
-            document.getElementById('failure-warning-popup').style.display = 'flex';
-        }
-
+   function showFailureWarning(player) {
+    const genderReady = getGenderAddress(player.gender, 'מוכן', 'מוכנה');
+    const genderReceive = getGenderVerb(player.gender, 'תקבל', 'תקבלי');
+    
+    document.getElementById('failure-warning-content').innerHTML = `
+        <strong>${player.name}, הגעת ל-5 פסילות!</strong><br><br>
+        לכן ${genderReceive} משימה מינית במיוחד...<br><br>
+        ${genderReady} למשימה שלך? 😏
+    `;
+    
+    // עדכון טקסט הכפתור
+    const readyButton = document.querySelector('#failure-warning-popup .btn-danger');
+    readyButton.innerHTML = `<span class="interactive-icon">😈</span> כן, אני ${genderReady} למשימה!`;
+    
+    document.getElementById('failure-warning-popup').style.display = 'flex';
+}
         function showSensualTask() {
             playButtonClick();
             document.getElementById('failure-warning-popup').style.display = 'none';
@@ -1702,9 +1733,21 @@
                           .replace(/תאר\/י/g, 'תארי')
                           .replace(/העבר\/י/g, 'העבירי');
             }
+			else {
+                task = task.replace(/שב\/י/g, 'שב')
+                          .replace(/תן\/י/g, 'תן')
+                          .replace(/הורד\/י/g, 'הורד')
+                          .replace(/לחש\/י/g, 'לחש')
+                          .replace(/לקק\/י/g, 'לקק')
+                          .replace(/נשק\/י/g, 'נשק')
+                          .replace(/תאר\/י/g, 'תאר')
+                          .replace(/העבר\/י/g, 'העבר');
+            }
             
             if (otherPlayer.gender === 'female') {
                 task = task.replace(/בחירתו\/ה/g, 'בחירתה');
+            } else {
+                task = task.replace(/בחירתו\/ה/g, 'בחירתו');
             }
             
             document.getElementById('task-content').innerHTML = `
@@ -1832,12 +1875,12 @@
             `;
 
             if (winner) {
-                const winnerVerb = getGenderText(winnerGender, 'ניצח', 'ניצחה');
+                const winnerVerb = getGenderVerb(winnerGender, 'ניצח', 'ניצחה');
                 resultsHTML += `
                     <div style="background: linear-gradient(45deg, #ffeaa7, #fab1a0); color: #333; padding: 3rem; border-radius: 25px; margin: 3rem 0; animation: pulse 2s infinite;">
                         <h3 style="font-size: 2rem; margin-bottom: 1rem;"><span class="interactive-icon">🏆</span> ${winner} ${winnerVerb}!</h3>
                         <p style="font-size: 1.4rem; margin-top: 1.5rem;">
-                            הפרס שלך: <strong>${gameState.prize}</strong>
+                            הפרס ${getGenderAddress(winnerGender, 'שלך', 'שלך')}: <strong>${gameState.prize}</strong>
                         </p>
                     </div>
                 `;
@@ -1872,10 +1915,10 @@
             let winner = '';
             
             if (player1Score > player2Score) {
-                const winnerVerb = getGenderText(gameState.player1.gender, 'ניצח', 'ניצחה');
+                const winnerVerb = getGenderVerb(gameState.player1.gender, 'ניצח', 'ניצחה');
                 winner = `🏆 ${gameState.player1.name} ${winnerVerb}!`;
             } else if (player2Score > player1Score) {
-                const winnerVerb = getGenderText(gameState.player2.gender, 'ניצח', 'ניצחה');
+                const winnerVerb = getGenderVerb(gameState.player2.gender, 'ניצח', 'ניצחה');
                 winner = `🏆 ${gameState.player2.name} ${winnerVerb}!`;
             } else {
                 winner = '🤝 תיקו!';
@@ -1996,6 +2039,8 @@
                 }
             }
         });
+</script>
     </script>
 </body>
 </html>
+
