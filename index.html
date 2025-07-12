@@ -897,17 +897,47 @@
                 margin-bottom: 0.8rem;
             }
         }
+
+        /* הוספת מחלקות נגישות */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* סגנון לכפתורים נגישים */
+        .btn:focus {
+            outline: 3px solid rgba(255, 255, 255, 0.7);
+            outline-offset: 2px;
+        }
+
+        /* הודעת שגיאה */
+        .error-message {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            padding: 1rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            font-weight: bold;
+            animation: pulse 1s;
+        }
     </style>
 </head>
 <body>
     <div class="synthwave-grid"></div>
     
-    <button class="settings-btn interactive-icon" onclick="openSettings()" title="הגדרות">⚙️</button>
-    <button class="sound-btn interactive-icon" onclick="toggleSound()" title="הפעל/כבה צלילים" id="sound-toggle">🔊</button>
+    <button class="settings-btn interactive-icon" onclick="openSettings()" title="הגדרות" aria-label="פתח הגדרות">⚙️</button>
+    <button class="sound-btn interactive-icon" onclick="toggleSound()" title="הפעל/כבה צלילים" id="sound-toggle" aria-label="הפעל או כבה צלילים">🔊</button>
 
     <div class="container">
         <!-- מסך ברוכים הבאים -->
-        <div id="welcome-screen" class="screen active">
+        <div id="welcome-screen" class="screen active" role="main">
             <div class="screen-content">
                 <div class="title">🎮 משחק הזיכרון הגדול 🎮</div>
                 <div class="subtitle">המשחק הזוגי שיבדק כמה טוב אתם מכירים אחד את השני!</div>
@@ -917,34 +947,34 @@
                 </div>
             </div>
             <div class="screen-actions">
-                <button class="btn" onclick="nextScreen()"><span class="interactive-icon">➡️</span> בואו נתחיל!</button>
+                <button class="btn" onclick="nextScreen()" aria-label="התחל משחק"><span class="interactive-icon">➡️</span> בואו נתחיל!</button>
             </div>
         </div>
 
         <!-- מסך הגדרת שחקנים -->
-        <div id="players-screen" class="screen">
+        <div id="players-screen" class="screen" role="main">
             <div class="screen-content">
                 <div class="title"><span class="interactive-icon">👫</span> פרטי השחקנים</div>
                 <div class="card">
                     <div class="input-group">
-                        <label>שם השחקן הראשון:</label>
-                        <input type="text" id="player1-name" placeholder="הכנס שם">
+                        <label for="player1-name">שם השחקן הראשון:</label>
+                        <input type="text" id="player1-name" placeholder="הכנס שם" aria-required="true" maxlength="15">
                     </div>
                     <div class="input-group">
-                        <label>מגדר:</label>
-                        <select id="player1-gender">
+                        <label for="player1-gender">מגדר:</label>
+                        <select id="player1-gender" aria-label="בחר מגדר עבור שחקן ראשון">
                             <option value="male">זכר</option>
                             <option value="female">נקבה</option>
                         </select>
                     </div>
                     
                     <div class="input-group">
-                        <label>שם השחקן השני:</label>
-                        <input type="text" id="player2-name" placeholder="הכנס שם">
+                        <label for="player2-name">שם השחקן השני:</label>
+                        <input type="text" id="player2-name" placeholder="הכנס שם" aria-required="true" maxlength="15">
                     </div>
                     <div class="input-group">
-                        <label>מגדר:</label>
-                        <select id="player2-gender">
+                        <label for="player2-gender">מגדר:</label>
+                        <select id="player2-gender" aria-label="בחר מגדר עבור שחקן שני">
                             <option value="male">זכר</option>
                             <option value="female">נקבה</option>
                         </select>
@@ -952,28 +982,28 @@
                 </div>
             </div>
             <div class="screen-actions">
-                <button class="btn" onclick="nextScreen()"><span class="interactive-icon">➡️</span> המשך</button>
+                <button class="btn" onclick="nextScreen()" aria-label="המשך לשלב הבא"><span class="interactive-icon">➡️</span> המשך</button>
             </div>
         </div>
 
         <!-- מסך פרס -->
-        <div id="prize-screen" class="screen">
+        <div id="prize-screen" class="screen" role="main">
             <div class="screen-content">
                 <div class="title"><span class="interactive-icon">🏆</span> על מה אתם מתחרים?</div>
                 <div class="card">
                     <div class="input-group">
-                        <label>מה הפרס למנצח?</label>
-                        <input type="text" id="prize" placeholder="לדוגמה: מסאז' של 30 דקות...">
+                        <label for="prize">מה הפרס למנצח?</label>
+                        <input type="text" id="prize" placeholder="לדוגמה: מסאז' של 30 דקות..." maxlength="50">
                     </div>
                 </div>
             </div>
             <div class="screen-actions">
-                <button class="btn" onclick="nextScreen()"><span class="interactive-icon">➡️</span> המשך</button>
+                <button class="btn" onclick="nextScreen()" aria-label="המשך לשלב הבא"><span class="interactive-icon">➡️</span> המשך</button>
             </div>
         </div>
 
         <!-- מסך הסבר -->
-        <div id="rules-screen" class="screen">
+        <div id="rules-screen" class="screen" role="main">
             <div class="screen-content">
                 <div class="title"><span class="interactive-icon">📋</span> איך המשחק עובד?</div>
                 <div class="card">
@@ -992,7 +1022,7 @@
                             <div style="display: flex; align-items: center; justify-content: center; margin: 1rem 0;">
                                 <span style="font-size: 1.1rem;">כן</span>
                                 <label class="toggle-switch">
-                                    <input type="checkbox" id="sensual-tasks" checked>
+                                    <input type="checkbox" id="sensual-tasks" checked aria-label="כלול משימות חושניות">
                                     <span class="slider"></span>
                                 </label>
                                 <span style="font-size: 1.1rem;">לא</span>
@@ -1005,29 +1035,29 @@
                 </div>
             </div>
             <div class="screen-actions">
-                <button class="btn" onclick="startCountdown()"><span class="interactive-icon">🎮</span> מוכנים? בואו נתחיל!</button>
+                <button class="btn" onclick="startCountdown()" aria-label="התחל משחק"><span class="interactive-icon">🎮</span> מוכנים? בואו נתחיל!</button>
             </div>
         </div>
 
         <!-- מסך ספירה לאחור -->
-        <div id="countdown-screen" class="screen">
+        <div id="countdown-screen" class="screen" role="main">
             <div class="screen-content">
-                <div class="timer" id="countdown-timer">3</div>
+                <div class="timer" id="countdown-timer" aria-live="polite">3</div>
             </div>
         </div>
 
         <!-- מסך כותרת חלק -->
-        <div id="chapter-screen" class="screen">
+        <div id="chapter-screen" class="screen" role="main">
             <div class="screen-content">
                 <div class="chapter-title" id="chapter-title"></div>
             </div>
             <div class="screen-actions">
-                <button class="btn" onclick="startQuestions()"><span class="interactive-icon">➡️</span> בואו נתחיל את החלק!</button>
+                <button class="btn" onclick="startQuestions()" aria-label="התחל שאלות"><span class="interactive-icon">➡️</span> בואו נתחיל את החלק!</button>
             </div>
         </div>
 
         <!-- מסך משחק -->
-        <div id="game-screen" class="screen">
+        <div id="game-screen" class="screen" role="main">
             <div class="game-header">
                 <div class="players-info">
                     <div class="player-card">
@@ -1036,7 +1066,7 @@
                     </div>
                     <div class="player-card">
                         <div>שאלה <span id="current-question">1</span>/40</div>
-                        <div class="progress-bar">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="2.5" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-fill" id="progress-fill" style="width: 2.5%"></div>
                         </div>
                     </div>
@@ -1048,35 +1078,35 @@
             </div>
 
             <div class="game-content">
-                <div class="question-card" id="question-display">
+                <div class="question-card" id="question-display" role="alert" aria-live="polite">
                     שאלה תופיע כאן
                 </div>
             </div>
 
             <div class="game-controls">
                 <div class="controls">
-                    <button class="btn btn-success" onclick="answerQuestion(1)">
+                    <button class="btn btn-success" onclick="answerQuestion(1)" aria-label="שחקן ראשון ניצח">
                         <span class="interactive-icon">🏆</span> <span id="player1-btn">שחקן 1 ניצח</span>
                     </button>
-                    <button class="btn btn-success" onclick="answerQuestion(2)">
+                    <button class="btn btn-success" onclick="answerQuestion(2)" aria-label="שחקן שני ניצח">
                         <span class="interactive-icon">🏆</span> <span id="player2-btn">שחקן 2 ניצח</span>
                     </button>
-                    <button class="btn btn-secondary" onclick="answerQuestion('both')">
+                    <button class="btn btn-secondary" onclick="answerQuestion('both')" aria-label="שני השחקנים הצליחו">
                         <span class="interactive-icon">✅</span> שנינו הצלחנו
                     </button>
-                    <button class="btn btn-danger" onclick="answerQuestion('none')">
+                    <button class="btn btn-danger" onclick="answerQuestion('none')" aria-label="שני השחקנים לא זכרו">
                         <span class="interactive-icon">❌</span> שנינו לא זכרנו
                     </button>
                 </div>
 
                 <div class="secondary-controls">
-                    <button class="btn btn-warning" onclick="undoLastAction()"><span class="interactive-icon">🔁</span> בטל פעולה</button>
+                    <button class="btn btn-warning" onclick="undoLastAction()" aria-label="בטל פעולה אחרונה"><span class="interactive-icon">🔁</span> בטל פעולה</button>
                 </div>
             </div>
         </div>
 
         <!-- מסך תוצאות -->
-        <div id="results-screen" class="screen">
+        <div id="results-screen" class="screen" role="main">
             <div class="screen-content">
                 <div class="title"><span class="interactive-icon">🏆</span> תוצאות המשחק!</div>
                 <div class="card">
@@ -1084,8 +1114,8 @@
                 </div>
             </div>
             <div class="screen-actions">
-                <button class="btn btn-share" onclick="shareResults()"><span class="interactive-icon">📱</span> שתף בווטסאפ</button>
-                <button class="btn" onclick="restartGame()"><span class="interactive-icon">🔄</span> משחק חדש</button>
+                <button class="btn btn-share" onclick="shareResults()" aria-label="שתף תוצאות בווטסאפ"><span class="interactive-icon">📱</span> שתף בווטסאפ</button>
+                <button class="btn" onclick="restartGame()" aria-label="התחל משחק חדש"><span class="interactive-icon">🔄</span> משחק חדש</button>
             </div>
         </div>
     </div>
@@ -1093,77 +1123,117 @@
     <!-- פופאפים -->
     
     <!-- פופאפ הגדרות -->
-    <div id="settings-popup" class="popup">
+    <div id="settings-popup" class="popup" role="dialog" aria-labelledby="settings-title">
         <div class="popup-content">
-            <div class="title"><span class="interactive-icon">⚙️</span> הגדרות</div>
+            <div class="title" id="settings-title"><span class="interactive-icon">⚙️</span> הגדרות</div>
             <div class="input-group">
-                <label>שם שחקן 1:</label>
-                <input type="text" id="settings-player1-name">
+                <label for="settings-player1-name">שם שחקן 1:</label>
+                <input type="text" id="settings-player1-name" maxlength="15">
             </div>
             <div class="input-group">
-                <label>שם שחקן 2:</label>
-                <input type="text" id="settings-player2-name">
+                <label for="settings-player2-name">שם שחקן 2:</label>
+                <input type="text" id="settings-player2-name" maxlength="15">
             </div>
             <div class="input-group">
-                <label>הפרס:</label>
-                <input type="text" id="settings-prize">
+                <label for="settings-prize">הפרס:</label>
+                <input type="text" id="settings-prize" maxlength="50">
             </div>
             <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 15px;">
                 <p style="margin-bottom: 1rem;"><span class="interactive-icon">💌</span> יצירת קשר:</p>
                 <p>למשוב, הצעות או שאלות:</p>
                 <p style="direction: ltr;">contact@memorygame.com</p>
             </div>
-            <button class="btn btn-success" onclick="saveSettings()"><span class="interactive-icon">💾</span> שמור שינויים</button>
-            <button class="btn btn-secondary" onclick="closeSettings()"><span class="interactive-icon">❌</span> סגור</button>
+            <button class="btn btn-success" onclick="saveSettings()" aria-label="שמור שינויים"><span class="interactive-icon">💾</span> שמור שינויים</button>
+            <button class="btn btn-secondary" onclick="closeSettings()" aria-label="סגור הגדרות"><span class="interactive-icon">❌</span> סגור</button>
         </div>
     </div>
 
     <!-- פופאפ הודעה על 5 פסילות -->
-    <div id="failure-warning-popup" class="popup">
+    <div id="failure-warning-popup" class="popup" role="dialog" aria-labelledby="failure-warning-title">
         <div class="popup-content">
-            <div class="title" style="color: #ff6b6b;"><span class="interactive-icon">😱</span> אוי אוי אוי!</div>
+            <div class="title" id="failure-warning-title" style="color: #ff6b6b;"><span class="interactive-icon">😱</span> אוי אוי אוי!</div>
             <div id="failure-warning-content" style="font-size: 1.4rem; margin: 2rem 0;"></div>
-            <button class="btn btn-danger" onclick="showSensualTask()"><span class="interactive-icon">😈</span> כן, אני מוכן/ה למשימה!</button>
-            <button class="btn btn-secondary" onclick="skipTask()"><span class="interactive-icon">😅</span> אולי פעם הבאה...</button>
+            <button class="btn btn-danger" onclick="showSensualTask()" aria-label="קבל משימה"><span class="interactive-icon">😈</span> כן, אני מוכן/ה למשימה!</button>
+            <button class="btn btn-secondary" onclick="skipTask()" aria-label="דלג על משימה"><span class="interactive-icon">😅</span> אולי פעם הבאה...</button>
         </div>
     </div>
 
     <!-- פופאפ למשימה חושנית -->
-    <div id="task-popup" class="popup">
+    <div id="task-popup" class="popup" role="dialog" aria-labelledby="task-title">
         <div class="popup-content">
-            <div class="title"><span class="interactive-icon">💕</span> המשימה שלך!</div>
+            <div class="title" id="task-title"><span class="interactive-icon">💕</span> המשימה שלך!</div>
             <div id="task-content" style="font-size: 1.3rem; margin: 2rem 0;"></div>
-            <button class="btn btn-success" onclick="completeTask()"><span class="interactive-icon">✅</span> ביצעתי את המשימה</button>
+            <button class="btn btn-success" onclick="completeTask()" aria-label="סיים משימה"><span class="interactive-icon">✅</span> ביצעתי את המשימה</button>
         </div>
     </div>
 
     <!-- פופאפ להודעה על 3 פסילות רצופות -->
-    <div id="message-popup" class="popup">
+    <div id="message-popup" class="popup" role="dialog" aria-labelledby="message-title">
         <div class="popup-content">
             <div id="message-content"></div>
-            <button class="btn" onclick="closeMessagePopup()"><span class="interactive-icon">✅</span> הבנתי</button>
+            <button class="btn" onclick="closeMessagePopup()" aria-label="סגור הודעה"><span class="interactive-icon">✅</span> הבנתי</button>
         </div>
     </div>
 
     <script>
-
         // משתני מערכת הצלילים
         let soundEnabled = true;
         let audioContext = null;
         let screenTransitionNumber = 0;
+        let audioInitialized = false;
+        let audioErrorCount = 0;
+        let confettiElements = []; // מעקב אחר אלמנטי confetti
 
-        // יצירת צלילים
+        // אתחול אודיו - רק אחרי אינטראקציה של המשתמש
         function initializeAudio() {
+            if (audioInitialized) return;
+            
             try {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    audioInitialized = true;
+                    
+                    // במובייל, AudioContext נוצר ב-suspended state
+                    if (audioContext.state === 'suspended' && typeof audioContext.resume === 'function') {
+                        audioContext.resume().then(() => {
+                            console.log('Audio context resumed');
+                        }).catch(e => {
+                            console.warn('Failed to resume audio context:', e);
+                        });
+                    }
+                } else {
+                    throw new Error('Web Audio API not supported');
+                }
             } catch (e) {
-                console.log('Web Audio API not supported');
+                console.warn('Web Audio API not supported:', e);
                 soundEnabled = false;
+                updateSoundButton();
+            }
+        }
+
+        // אתחול אודיו בהקלקה הראשונה
+        function ensureAudioReady() {
+            if (!audioInitialized && soundEnabled) {
+                initializeAudio();
+            }
+            
+            if (audioContext && audioContext.state === 'suspended' && typeof audioContext.resume === 'function') {
+                audioContext.resume().catch(e => {
+                    console.warn('Failed to resume audio:', e);
+                });
             }
         }
 
         function playTone(frequency, duration, type = 'sine', volume = 0.1) {
-            if (!soundEnabled || !audioContext) return;
+            if (!soundEnabled) return;
+            
+            // ודא שהאודיו מוכן
+            ensureAudioReady();
+            
+            if (!audioContext || audioContext.state === 'closed') {
+                console.warn('Audio context not available');
+                return;
+            }
             
             try {
                 const oscillator = audioContext.createOscillator();
@@ -1181,8 +1251,20 @@
                 
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + duration);
+                
+                // איפוס מונה השגיאות בהצלחה
+                audioErrorCount = 0;
+                
             } catch (e) {
-                console.log('Error playing sound:', e);
+                console.warn('Error playing sound:', e);
+                audioErrorCount++;
+                
+                // אם יש יותר מדי שגיאות, כבה צלילים אוטומטית
+                if (audioErrorCount > 3) {
+                    soundEnabled = false;
+                    updateSoundButton();
+                    console.warn('Too many audio errors, disabling sound');
+                }
             }
         }
 
@@ -1232,20 +1314,32 @@
             });
         }
 
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
+        function updateSoundButton() {
             const soundBtn = document.getElementById('sound-toggle');
+            if (!soundBtn) return;
             
             if (soundEnabled) {
                 soundBtn.textContent = '🔊';
                 soundBtn.classList.remove('muted');
                 soundBtn.title = 'כבה צלילים';
-                if (!audioContext) initializeAudio();
-                playButtonClick();
+                soundBtn.setAttribute('aria-label', 'כבה צלילים');
             } else {
                 soundBtn.textContent = '🔇';
                 soundBtn.classList.add('muted');
                 soundBtn.title = 'הפעל צלילים';
+                soundBtn.setAttribute('aria-label', 'הפעל צלילים');
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            updateSoundButton();
+            
+            if (soundEnabled) {
+                // נסה לאתחל אודיו כשמפעילים
+                initializeAudio();
+                // נגן צליל בדיקה
+                setTimeout(() => playButtonClick(), 100);
             }
         }
 
@@ -1389,6 +1483,12 @@
                 .replace(/PLAYER2/g, gameState.player2.name);
         }
 
+        function sanitizeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
         function showScreen(screenId, animation = 'fadeInUp') {
             const currentScreen = document.querySelector('.screen.active');
             const nextScreen = document.getElementById(screenId);
@@ -1412,33 +1512,88 @@
             playTransition();
         }
 
+        function showErrorMessage(message) {
+            // מחיקת הודעות שגיאה קודמות
+            const existingError = document.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            
+            const activeScreen = document.querySelector('.screen.active .screen-content');
+            if (activeScreen) {
+                activeScreen.appendChild(errorDiv);
+                
+                // הסרת ההודעה אחרי 4 שניות
+                setTimeout(() => {
+                    if (errorDiv.parentNode) {
+                        errorDiv.remove();
+                    }
+                }, 4000);
+            }
+        }
+
         function nextScreen() {
             playButtonClick();
+            
+            if (gameState.currentScreen === 1) { // מסך שחקנים
+                if (!savePlayersInfo()) return;
+            } else if (gameState.currentScreen === 2) { // מסך פרס
+                savePrizeInfo();
+            }
+
             const screens = ['welcome-screen', 'players-screen', 'prize-screen', 'rules-screen'];
             gameState.currentScreen++;
-            
-            if (gameState.currentScreen === 2) {
-                savePlayersInfo();
-                return;
-            } else if (gameState.currentScreen === 3) {
-                savePrizeInfo();
-                return;
-            }
 
             if (gameState.currentScreen < screens.length) {
                 showScreen(screens[gameState.currentScreen], 'slideRight');
             }
         }
 
+        function validateName(name) {
+            if (!name || name.trim().length === 0) {
+                return 'אנא הכנס שם';
+            }
+            if (name.trim().length < 2) {
+                return 'השם חייב להכיל לפחות 2 תווים';
+            }
+            if (name.trim().length > 15) {
+                return 'השם לא יכול להכיל יותר מ-15 תווים';
+            }
+            // regex מעודכן שמאפשר יותר תווים (כולל apostrophe ומקף)
+            if (!/^[\u0590-\u05FFa-zA-Z\s\u200E\u200F'\-\.]+$/.test(name.trim())) {
+                return 'השם יכול להכיל רק אותיות, רווחים, מקפים ו apostrophe';
+            }
+            return null;
+        }
+
         function savePlayersInfo() {
             const player1Name = document.getElementById('player1-name').value.trim();
             const player2Name = document.getElementById('player2-name').value.trim();
             
-            if (!player1Name || !player2Name) {
+            // בדיקת validation
+            const player1Error = validateName(player1Name);
+            const player2Error = validateName(player2Name);
+            
+            if (player1Error) {
                 playError();
-                alert('אנא הכנס את שמות השחקנים');
-                gameState.currentScreen--;
-                return;
+                showErrorMessage(`שגיאה בשם השחקן הראשון: ${player1Error}`);
+                return false;
+            }
+            
+            if (player2Error) {
+                playError();
+                showErrorMessage(`שגיאה בשם השחקן השני: ${player2Error}`);
+                return false;
+            }
+            
+            if (player1Name.toLowerCase() === player2Name.toLowerCase()) {
+                playError();
+                showErrorMessage('שמות השחקנים חייבים להיות שונים');
+                return false;
             }
 
             gameState.player1.name = player1Name;
@@ -1446,18 +1601,17 @@
             gameState.player2.name = player2Name;
             gameState.player2.gender = document.getElementById('player2-gender').value;
 
-            document.getElementById('player1-display').textContent = player1Name;
-            document.getElementById('player2-display').textContent = player2Name;
+            document.getElementById('player1-display').textContent = sanitizeHTML(player1Name);
+            document.getElementById('player2-display').textContent = sanitizeHTML(player2Name);
             updateButtonTexts();
 
             playSuccess();
-            showScreen('prize-screen', 'slideRight');
+            return true;
         }
 
         function savePrizeInfo() {
             gameState.prize = document.getElementById('prize').value.trim() || 'הנצחון!';
             playSuccess();
-            showScreen('rules-screen', 'slideRight');
         }
 
         function startCountdown() {
@@ -1518,6 +1672,10 @@
                 const progress = ((gameState.currentQuestion + 1) / getTotalQuestions()) * 100;
                 document.getElementById('progress-fill').style.width = progress + '%';
                 
+                // עדכון progressbar עבור נגישות
+                const progressBar = document.querySelector('.progress-bar');
+                progressBar.setAttribute('aria-valuenow', progress.toFixed(1));
+                
                 updateScoreDisplay();
             } else {
                 gameState.currentChapter++;
@@ -1541,21 +1699,50 @@
             return total;
         }
 
+        function checkForSensualTask() {
+            if (!gameState.sensualTasks) return;
+
+            let taskPlayer = null;
+            if (gameState.player1.failures >= 5) {
+                taskPlayer = gameState.player1;
+                gameState.currentTaskPlayer = gameState.player1;
+                gameState.player1.failures = 0; // איפוס לאחר הגעה ל-5
+            } else if (gameState.player2.failures >= 5) {
+                taskPlayer = gameState.player2;
+                gameState.currentTaskPlayer = gameState.player2;
+                gameState.player2.failures = 0; // איפוס לאחר הגעה ל-5
+            }
+
+            if (taskPlayer) {
+                if (gameState.currentTaskIndex >= sensualTasks.length) {
+                    gameState.currentTaskIndex = 0;
+                    showMessage(`נגמרו המשימות! חוזרים להתחלה... 😏`);
+                    setTimeout(() => {
+                        showFailureWarning(taskPlayer);
+                    }, 2000);
+                } else {
+                    showFailureWarning(taskPlayer);
+                }
+            }
+        }
+
         function answerQuestion(answer) {
             playButtonClick();
             
-            if (!gameState.hasUsedUndo) {
-                gameState.lastAction = {
-                    question: gameState.currentQuestion,
-                    chapter: gameState.currentChapter,
-                    player1Score: gameState.player1.score,
-                    player2Score: gameState.player2.score,
-                    player1Failures: gameState.player1.failures,
-                    player2Failures: gameState.player2.failures,
-                    player1ConsecutiveFailures: gameState.player1.consecutiveFailures,
-                    player2ConsecutiveFailures: gameState.player2.consecutiveFailures
-                };
-            }
+            // שמירת מצב רק אם לא השתמשו ב-undo
+            gameState.lastAction = {
+                question: gameState.currentQuestion,
+                chapter: gameState.currentChapter,
+                player1Score: gameState.player1.score,
+                player2Score: gameState.player2.score,
+                player1Failures: gameState.player1.failures,
+                player2Failures: gameState.player2.failures,
+                player1ConsecutiveFailures: gameState.player1.consecutiveFailures,
+                player2ConsecutiveFailures: gameState.player2.consecutiveFailures
+            };
+            
+            // איפוס הדגל של undo לאחר שמירת מצב חדש
+            gameState.hasUsedUndo = false;
 
             let willHaveFiveFailures = false;
             
@@ -1588,9 +1775,11 @@
                 playError();
             }
 
+            // בדיקת הודעות עידוד רק אם לא תהיה משימה
             if (!willHaveFiveFailures) {
                 checkForEncouragementMessage();
             }
+            
             checkForSensualTask();
             
             gameState.currentQuestion++;
@@ -1601,22 +1790,39 @@
             let messagePlayer = null;
             let otherPlayer = null;
 
-            if (gameState.player1.consecutiveFailures === 3) {
+            // שמירת מצב קודם לפני איפוס
+            const player1Had3Failures = gameState.player1.consecutiveFailures === 3;
+            const player2Had3Failures = gameState.player2.consecutiveFailures === 3;
+
+            if (player1Had3Failures) {
                 messagePlayer = gameState.player1;
                 otherPlayer = gameState.player2;
-                gameState.player1.consecutiveFailures = 0;
-            } else if (gameState.player2.consecutiveFailures === 3) {
+                gameState.player1.consecutiveFailures = 0; // איפוס אחרי הצגת הודעה
+            } else if (player2Had3Failures) {
                 messagePlayer = gameState.player2;
                 otherPlayer = gameState.player1;
-                gameState.player2.consecutiveFailures = 0;
+                gameState.player2.consecutiveFailures = 0; // איפוס אחרי הצגת הודעה
             }
 
             if (messagePlayer) {
                 const messageType = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
-               let message = messageType.message
-    .replace(/OTHER_PLAYER/g, otherPlayer.name)  // ← קודם את זה!
-    .replace(/PLAYER/g, messagePlayer.name);     // ← ואח"כ את זה!
+                
+                // החלפת שמות בצורה בטוחה
+                let message = messageType.message;
+                
+                // יצירת placeholders זמניים כדי למנוע התנגשויות
+                const playerPlaceholder = '###CURRENT_PLAYER###';
+                const otherPlaceholder = '###OTHER_PLAYER###';
+                
+                // החלפה ראשונית ל-placeholders
+                message = message.replace(/OTHER_PLAYER/g, otherPlaceholder);
+                message = message.replace(/PLAYER/g, playerPlaceholder);
+                
+                // החלפה סופית לשמות האמיתיים
+                message = message.replace(new RegExp(playerPlaceholder, 'g'), messagePlayer.name);
+                message = message.replace(new RegExp(otherPlaceholder, 'g'), otherPlayer.name);
 
+                // התאמה לפי מגדר השחקן הנוכחי
                 if (messagePlayer.gender === 'female') {
                     message = message
                         .replace(/את\/ה/g, 'את')
@@ -1644,6 +1850,7 @@
                         .replace(/יחזור\/תחזור/g, 'יחזור');
                 }
 
+                // התאמה לפי מגדר השחקן השני
                 if (otherPlayer.gender === 'female') {
                     message = message
                         .replace(/תתכונן\/י/g, 'תתכונני')
@@ -1670,49 +1877,23 @@
             }
         }
 
-        function checkForSensualTask() {
-            if (!gameState.sensualTasks) return;
-
-            let taskPlayer = null;
-            if (gameState.player1.failures >= 5) {
-                taskPlayer = gameState.player1;
-                gameState.currentTaskPlayer = gameState.player1;
-                gameState.player1.failures = 0;
-            } else if (gameState.player2.failures >= 5) {
-                taskPlayer = gameState.player2;
-                gameState.currentTaskPlayer = gameState.player2;
-                gameState.player2.failures = 0;
-            }
-
-            if (taskPlayer) {
-                if (gameState.currentTaskIndex >= sensualTasks.length) {
-                    gameState.currentTaskIndex = 0;
-                    showMessage(`נגמרו המשימות! חוזרים להתחלה... 😏`);
-                    setTimeout(() => {
-                        showFailureWarning(taskPlayer);
-                    }, 2000);
-                } else {
-                    showFailureWarning(taskPlayer);
-                }
-            }
+        function showFailureWarning(player) {
+            const genderReady = getGenderAddress(player.gender, 'מוכן', 'מוכנה');
+            const genderReceive = getGenderVerb(player.gender, 'תקבל', 'תקבלי');
+            
+            document.getElementById('failure-warning-content').innerHTML = `
+                <strong>${sanitizeHTML(player.name)}, הגעת ל-5 פסילות!</strong><br><br>
+                לכן ${genderReceive} משימה מינית במיוחד...<br><br>
+                ${genderReady} למשימה שלך? 😏
+            `;
+            
+            // עדכון טקסט הכפתור
+            const readyButton = document.querySelector('#failure-warning-popup .btn-danger');
+            readyButton.innerHTML = `<span class="interactive-icon">😈</span> כן, אני ${genderReady} למשימה!`;
+            
+            document.getElementById('failure-warning-popup').style.display = 'flex';
         }
 
-   function showFailureWarning(player) {
-    const genderReady = getGenderAddress(player.gender, 'מוכן', 'מוכנה');
-    const genderReceive = getGenderVerb(player.gender, 'תקבל', 'תקבלי');
-    
-    document.getElementById('failure-warning-content').innerHTML = `
-        <strong>${player.name}, הגעת ל-5 פסילות!</strong><br><br>
-        לכן ${genderReceive} משימה מינית במיוחד...<br><br>
-        ${genderReady} למשימה שלך? 😏
-    `;
-    
-    // עדכון טקסט הכפתור
-    const readyButton = document.querySelector('#failure-warning-popup .btn-danger');
-    readyButton.innerHTML = `<span class="interactive-icon">😈</span> כן, אני ${genderReady} למשימה!`;
-    
-    document.getElementById('failure-warning-popup').style.display = 'flex';
-}
         function showSensualTask() {
             playButtonClick();
             document.getElementById('failure-warning-popup').style.display = 'none';
@@ -1733,7 +1914,7 @@
                           .replace(/תאר\/י/g, 'תארי')
                           .replace(/העבר\/י/g, 'העבירי');
             }
-			else {
+            else {
                 task = task.replace(/שב\/י/g, 'שב')
                           .replace(/תן\/י/g, 'תן')
                           .replace(/הורד\/י/g, 'הורד')
@@ -1752,7 +1933,7 @@
             
             document.getElementById('task-content').innerHTML = `
                 <div style="padding: 1rem; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 1.4rem; line-height: 1.6;">
-                    ${task}
+                    ${sanitizeHTML(task)}
                 </div>
             `;
             
@@ -1774,7 +1955,7 @@
         function showMessage(message) {
             document.getElementById('message-content').innerHTML = `
                 <div style="font-size: 1.4rem; padding: 1.5rem; line-height: 1.6;">
-                    ${message}
+                    ${sanitizeHTML(message)}
                 </div>
             `;
             document.getElementById('message-popup').style.display = 'flex';
@@ -1821,6 +2002,8 @@
         }
 
         function createConfetti() {
+            cleanupConfetti(); // נקה confetti ישן לפני יצירת חדש
+            
             const colors = ['#ff0084', '#00ffff', '#ffeaa7', '#fab1a0', '#74b9ff'];
             for (let i = 0; i < 50; i++) {
                 setTimeout(() => {
@@ -1832,9 +2015,30 @@
                     confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
                     document.body.appendChild(confetti);
                     
-                    setTimeout(() => confetti.remove(), 5000);
+                    // הוספה למעקב
+                    confettiElements.push(confetti);
+                    
+                    setTimeout(() => {
+                        if (confetti.parentNode) {
+                            confetti.remove();
+                        }
+                        // הסרה מהמעקב
+                        const index = confettiElements.indexOf(confetti);
+                        if (index > -1) {
+                            confettiElements.splice(index, 1);
+                        }
+                    }, 5000);
                 }, i * 50);
             }
+        }
+
+        function cleanupConfetti() {
+            confettiElements.forEach(confetti => {
+                if (confetti.parentNode) {
+                    confetti.remove();
+                }
+            });
+            confettiElements = [];
         }
 
         function showResults() {
@@ -1862,12 +2066,12 @@
                     <h2 style="font-size: 2rem; margin-bottom: 3rem;"><span class="interactive-icon">📊</span> תוצאות סופיות</h2>
                     <div style="display: flex; justify-content: space-around; margin: 3rem 0; flex-wrap: wrap;">
                         <div style="margin: 2rem; min-width: 200px;">
-                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">${gameState.player1.name}</h3>
+                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">${sanitizeHTML(gameState.player1.name)}</h3>
                             <div class="score-animation" style="font-size: 3rem;">${player1Score}</div>
                             <div style="font-size: 1.2rem; margin-top: 0.5rem;">נקודות</div>
                         </div>
                         <div style="margin: 2rem; min-width: 200px;">
-                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">${gameState.player2.name}</h3>
+                            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">${sanitizeHTML(gameState.player2.name)}</h3>
                             <div class="score-animation" style="font-size: 3rem;">${player2Score}</div>
                             <div style="font-size: 1.2rem; margin-top: 0.5rem;">נקודות</div>
                         </div>
@@ -1878,9 +2082,9 @@
                 const winnerVerb = getGenderVerb(winnerGender, 'ניצח', 'ניצחה');
                 resultsHTML += `
                     <div style="background: linear-gradient(45deg, #ffeaa7, #fab1a0); color: #333; padding: 3rem; border-radius: 25px; margin: 3rem 0; animation: pulse 2s infinite;">
-                        <h3 style="font-size: 2rem; margin-bottom: 1rem;"><span class="interactive-icon">🏆</span> ${winner} ${winnerVerb}!</h3>
+                        <h3 style="font-size: 2rem; margin-bottom: 1rem;"><span class="interactive-icon">🏆</span> ${sanitizeHTML(winner)} ${winnerVerb}!</h3>
                         <p style="font-size: 1.4rem; margin-top: 1.5rem;">
-                            הפרס ${getGenderAddress(winnerGender, 'שלך', 'שלך')}: <strong>${gameState.prize}</strong>
+                            הפרס ${getGenderAddress(winnerGender, 'שלך', 'שלך')}: <strong>${sanitizeHTML(gameState.prize)}</strong>
                         </p>
                     </div>
                 `;
@@ -1889,7 +2093,7 @@
                     <div style="background: linear-gradient(45deg, #74b9ff, #0984e3); padding: 3rem; border-radius: 25px; margin: 3rem 0; animation: pulse 2s infinite;">
                         <h3 style="font-size: 2rem; margin-bottom: 1rem;"><span class="interactive-icon">🤝</span> תיקו!</h3>
                         <p style="font-size: 1.4rem; margin-top: 1.5rem;">
-                            שניכם זוכים ב: <strong>${gameState.prize}</strong>
+                            שניכם זוכים ב: <strong>${sanitizeHTML(gameState.prize)}</strong>
                         </p>
                     </div>
                 `;
@@ -1935,8 +2139,41 @@
             window.open(whatsappUrl, '_blank');
         }
 
-        function restartGame() {
-            playButtonClick();
+        function showConfirmDialog(title, message, onConfirm, onCancel) {
+            // יצירת popup אישור
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            popup.style.display = 'flex';
+            popup.setAttribute('role', 'dialog');
+            popup.innerHTML = `
+                <div class="popup-content">
+                    <div class="title">${sanitizeHTML(title)}</div>
+                    <div style="font-size: 1.2rem; margin: 2rem 0; line-height: 1.6;">
+                        ${sanitizeHTML(message)}
+                    </div>
+                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-danger" id="confirm-yes">✅ כן, התחל משחק חדש</button>
+                        <button class="btn btn-secondary" id="confirm-no">❌ לא, המשך במשחק הנוכחי</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            document.getElementById('confirm-yes').addEventListener('click', () => {
+                document.body.removeChild(popup);
+                onConfirm();
+            });
+            
+            document.getElementById('confirm-no').addEventListener('click', () => {
+                document.body.removeChild(popup);
+                onCancel();
+            });
+        }
+
+        function doRestartGame() {
+            // ניקוי confetti
+            cleanupConfetti();
             
             gameState = {
                 currentScreen: 0,
@@ -1959,6 +2196,22 @@
 
             showScreen('welcome-screen', 'zoom');
         }
+           
+        function restartGame() {
+            playButtonClick();
+            
+            const currentProgress = gameState.currentQuestion;
+            if (currentProgress > 5) { // רק אם יש התקדמות משמעותית
+                showConfirmDialog(
+                    '🔄 האם להתחיל משחק חדש?',
+                    `כבר ענית על ${currentProgress} שאלות. כל ההתקדמות תאבד.`,
+                    () => doRestartGame(),
+                    () => {} // ביטול - לא עושה כלום
+                );
+            } else {
+                doRestartGame();
+            }
+        }
 
         function openSettings() {
             playButtonClick();
@@ -1970,12 +2223,32 @@
 
         function saveSettings() {
             playButtonClick();
-            gameState.player1.name = document.getElementById('settings-player1-name').value.trim() || gameState.player1.name;
-            gameState.player2.name = document.getElementById('settings-player2-name').value.trim() || gameState.player2.name;
+            
+            // validation עבור שמות בהגדרות
+            const newPlayer1Name = document.getElementById('settings-player1-name').value.trim();
+            const newPlayer2Name = document.getElementById('settings-player2-name').value.trim();
+            
+            if (newPlayer1Name && validateName(newPlayer1Name)) {
+                showMessage(`שגיאה בשם שחקן 1: ${validateName(newPlayer1Name)}`);
+                return;
+            }
+            
+            if (newPlayer2Name && validateName(newPlayer2Name)) {
+                showMessage(`שגיאה בשם שחקן 2: ${validateName(newPlayer2Name)}`);
+                return;
+            }
+            
+            if (newPlayer1Name && newPlayer2Name && newPlayer1Name.toLowerCase() === newPlayer2Name.toLowerCase()) {
+                showMessage('שמות השחקנים חייבים להיות שונים');
+                return;
+            }
+            
+            gameState.player1.name = newPlayer1Name || gameState.player1.name;
+            gameState.player2.name = newPlayer2Name || gameState.player2.name;
             gameState.prize = document.getElementById('settings-prize').value.trim() || gameState.prize;
             
-            document.getElementById('player1-display').textContent = gameState.player1.name;
-            document.getElementById('player2-display').textContent = gameState.player2.name;
+            document.getElementById('player1-display').textContent = sanitizeHTML(gameState.player1.name);
+            document.getElementById('player2-display').textContent = sanitizeHTML(gameState.player2.name);
             updateButtonTexts();
             
             closeSettings();
@@ -1988,11 +2261,48 @@
             document.getElementById('settings-popup').style.display = 'none';
         }
 
+        // מניעת גלילה בטעות במובייל
+        function preventScroll(e) {
+            if (e.target.closest('.popup-content')) return;
+            if (e.target.closest('.screen.active')) {
+                e.preventDefault();
+            }
+        }
+
+        // טיפול בלחיצות מקלדת
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                const activeScreen = document.querySelector('.screen.active');
+                if (activeScreen) {
+                    const nextButton = activeScreen.querySelector('.btn:not(.btn-secondary):not(.btn-warning)');
+                    if (nextButton && !nextButton.disabled) {
+                        nextButton.click();
+                    }
+                }
+            } else if (e.key === 'Escape') {
+                // סגירת פופאפים בESC
+                const openPopups = document.querySelectorAll('.popup[style*="flex"]');
+                openPopups.forEach(popup => {
+                    popup.style.display = 'none';
+                });
+            }
+        }
+
         // אתחול המערכת
         document.addEventListener('DOMContentLoaded', function() {
-            // אתחול האודיו
-            initializeAudio();
-            
+            // אתחול כפתור הסאונד
+            updateSoundButton();
+
+            // אתחול אודיו בהקלקה הראשונה על כל דבר
+            document.addEventListener('click', function(e) {
+                ensureAudioReady();
+            }, { once: true });
+
+            // אתחול אודיו גם במגע (למובייל)
+            document.addEventListener('touchstart', function(e) {
+                ensureAudioReady();
+            }, { once: true });
+                
             // הגדרת מתג המשימות החושניות
             const sensualToggle = document.getElementById('sensual-tasks');
             const warning = document.getElementById('sensual-warning');
@@ -2013,34 +2323,15 @@
             sensualToggle.addEventListener('change', updateSensualWarning);
             updateSensualWarning();
 
-            // הוספת אפקטים קוליים לכל הכפתורים
-            document.addEventListener('click', function(e) {
-                if (e.target.matches('.btn') || e.target.closest('.btn')) {
-                    playButtonClick();
-                }
-            });
-        });
+            // מניעת גלילה בטעות במובייל
+            document.addEventListener('touchmove', preventScroll, { passive: false });
 
-        // מניעת גלילה בטעות במובייל
-        document.addEventListener('touchmove', function(e) {
-            if (e.target.closest('.popup')) return;
-            if (e.target.closest('.screen.active')) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
-        // טיפול באירועי מקלדת
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                const activeScreen = document.querySelector('.screen.active');
-                const nextButton = activeScreen.querySelector('.btn');
-                if (nextButton && !nextButton.disabled) {
-                    nextButton.click();
-                }
-            }
+            // טיפול באירועי מקלדת
+            document.addEventListener('keydown', handleKeyPress);
+            
+            // ניקוי במעבר דף
+            window.addEventListener('beforeunload', cleanupConfetti);
         });
-</script>
     </script>
 </body>
 </html>
-
