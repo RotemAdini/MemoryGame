@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>משחק הזיכרון הגדול</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="synthwave-grid"></div>
+    
+    <button class="settings-btn interactive-icon" onclick="openSettings()" title="הגדרות" aria-label="פתח הגדרות">⚙️</button>
+    <button class="sound-btn interactive-icon" onclick="toggleSound()" title="הפעל/כבה צלילים" id="sound-toggle" aria-label="הפעל או כבה צלילים" aria-pressed="true">🔊</button>
+
+    <div class="container">
+        <!-- מסך ברוכים הבאים -->
+        <div id="welcome-screen" class="screen active" role="main">
+            <div class="screen-content">
+                <div class="title">🎮 משחק הזיכרון הגדול 🎮</div>
+                <div class="subtitle">המשחק הזוגי שיבדק כמה טוב אתם מכירים אחד את השני!</div>
+                <div class="card">
+                    <p>ברוכים הבאים למשחק הכי מהנה לזוגות! <span class="interactive-icon">💕</span></p>
+                    <p>40 שאלות זיכרון מיוחדות שיעוררו זיכרונות מתוקים ויצחקו אתכם</p>
+                </div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn" onclick="nextScreen()" aria-label="התחל משחק"><span class="interactive-icon">➡️</span> בואו נתחיל!</button>
+            </div>
+        </div>
+
+        <!-- מסך הגדרת שחקנים -->
+        <div id="players-screen" class="screen" role="main">
+            <div class="screen-content">
+                <div class="title"><span class="interactive-icon">👫</span> פרטי השחקנים</div>
+                <div class="card">
+                    <div class="input-group">
+                        <label for="player1-name">שם השחקן הראשון:</label>
+                        <input type="text" id="player1-name" placeholder="הכנס שם" aria-required="true" maxlength="15">
+                    </div>
+                    <div class="input-group">
+                        <label for="player1-gender">מגדר:</label>
+                        <select id="player1-gender" aria-label="בחר מגדר עבור שחקן ראשון">
+                            <option value="male">זכר</option>
+                            <option value="female">נקבה</option>
+                        </select>
+                    </div>
+                <div class="input-group">
+    <label>בחר סמיילי עבור השחקן הראשון:</label>
+    <div class="emoji-selector" id="player1-emoji-selector">
+        <div class="emoji-option selected" data-emoji="😊">😊</div>
+        <div class="emoji-option" data-emoji="😎">😎</div>
+        <div class="emoji-option" data-emoji="🥰">🥰</div>
+        <div class="emoji-option" data-emoji="😍">😍</div>
+        <div class="emoji-option" data-emoji="🤗">🤗</div>
+        <div class="emoji-option" data-emoji="😘">😘</div>
+        <div class="emoji-option" data-emoji="🥳">🥳</div>
+        <div class="emoji-option" data-emoji="😁">😁</div>
+        <!-- כפתור בחירה מהנייד -->
+        <div class="emoji-option emoji-custom" id="player1-custom-emoji" title="בחר אמוג'י מהנייד">
+            <span style="font-size: 0.8rem;">📱+</span>
+        </div>
+    </div>
+    <!-- שדה אמוג'י מותאם אישית -->
+    <input type="text" id="player1-custom-input" placeholder="הדבק כאן אמוג'י מהנייד..." 
+           style="display: none; margin-top: 10px; max-width: 200px; text-align: center; font-size: 1.5rem;"
+           maxlength="2">
+</div>
+                    
+                    <div class="input-group">
+                        <label for="player2-name">שם השחקן השני:</label>
+                        <input type="text" id="player2-name" placeholder="הכנס שם" aria-required="true" maxlength="15">
+                    </div>
+                    <div class="input-group">
+                        <label for="player2-gender">מגדר:</label>
+                        <select id="player2-gender" aria-label="בחר מגדר עבור שחקן שני">
+                            <option value="male">זכר</option>
+                            <option value="female">נקבה</option>
+                        </select>
+                    </div>
+                   <div class="input-group">
+    <label>בחר סמיילי עבור השחקן השני:</label>
+    <div class="emoji-selector" id="player2-emoji-selector">
+        <div class="emoji-option" data-emoji="😊">😊</div>
+        <div class="emoji-option selected" data-emoji="😎">😎</div>
+        <div class="emoji-option" data-emoji="🥰">🥰</div>
+        <div class="emoji-option" data-emoji="😍">😍</div>
+        <div class="emoji-option" data-emoji="🤗">🤗</div>
+        <div class="emoji-option" data-emoji="😘">😘</div>
+        <div class="emoji-option" data-emoji="🥳">🥳</div>
+        <div class="emoji-option" data-emoji="😁">😁</div>
+        <!-- כפתור בחירה מהנייד -->
+        <div class="emoji-option emoji-custom" id="player2-custom-emoji" title="בחר אמוג'י מהנייד">
+            <span style="font-size: 0.8rem;">📱+</span>
+        </div>
+    </div>
+    <!-- שדה אמוג'י מותאם אישית -->
+    <input type="text" id="player2-custom-input" placeholder="הדבק כאן אמוג'י מהנייד..." 
+           style="display: none; margin-top: 10px; max-width: 200px; text-align: center; font-size: 1.5rem;"
+           maxlength="2">
+</div>
+                </div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn" onclick="nextScreen()" aria-label="המשך לשלב הבא"><span class="interactive-icon">➡️</span> המשך</button>
+            </div>
+        </div>
+
+        <!-- מסך פרס -->
+        <div id="prize-screen" class="screen" role="main">
+            <div class="screen-content">
+                <div class="title"><span class="interactive-icon">🏆</span> על מה אתם מתחרים?</div>
+                <div class="card">
+                    <div class="input-group">
+                        <label for="prize">מה הפרס למנצח?</label>
+                        <input type="text" id="prize" placeholder="לדוגמה: מסאז' של 30 דקות..." maxlength="50">
+                    </div>
+                </div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn" onclick="nextScreen()" aria-label="המשך לשלב הבא"><span class="interactive-icon">➡️</span> המשך</button>
+            </div>
+        </div>
+
+        <!-- מסך הסבר -->
+        <div id="rules-screen" class="screen" role="main">
+            <div class="screen-content">
+                <div class="title"><span class="interactive-icon">📋</span> איך המשחק עובד?</div>
+                <div class="card">
+                   <ul style="text-align: center; line-height: 1.8; list-style: none;">
+                        <li><span class="interactive-icon">🎯</span> המשחק מורכב מ-6 חלקים עם 40 שאלות</li>
+                        <li><span class="interactive-icon">🗣️</span> אתם עונים על השאלות בקול</li>
+                        <li><span class="interactive-icon">✅</span> לוחצים על הכפתור של מי שהצליח</li>
+                        <li><span class="interactive-icon">💥</span> כל 3 פסילות = משימה מיוחדת</li>
+                        <li><span class="interactive-icon">⚠️</span> 2 פסילות רצופות = הודעת עידוד</li>
+                        <li><span class="interactive-icon">🏆</span> בסוף נגלה מי המנצח!</li>
+                    </ul>
+                    
+                    <div class="info-box">
+                        <div class="input-group">
+                            <label style="font-size: 1.1rem;">האם לכלול משימות חושניות במשחק?</label>
+                            <div style="display: flex; align-items: center; justify-content: center; margin: 0.8rem 0;">
+                                <span style="font-size: 1rem;">כן</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="sensual-tasks" checked aria-label="כלול משימות חושניות">
+                                    <span class="slider"></span>
+                                </label>
+                                <span style="font-size: 1rem;">לא</span>
+                            </div>
+                            <div id="sensual-warning" class="sensual-warning">
+                                <span class="interactive-icon">⚠️</span> בחירה ב"כן" תוסיף משימות אינטימיות למשחק
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn" onclick="startCountdown()" aria-label="התחל משחק"><span class="interactive-icon">🎮</span> מוכנים? בואו נתחיל!</button>
+            </div>
+        </div>
+
+        <!-- מסך ספירה לאחור -->
+        <div id="countdown-screen" class="screen" role="main">
+            <div class="screen-content">
+                <div class="timer" id="countdown-timer" aria-live="polite">3</div>
+            </div>
+        </div>
+
+        <!-- מסך כותרת חלק -->
+        <div id="chapter-screen" class="screen" role="main">
+            <div class="screen-content">
+                <div class="chapter-title" id="chapter-title"></div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn" onclick="startQuestions()" aria-label="התחל שאלות"><span class="interactive-icon">➡️</span> בואו נתחיל את החלק!</button>
+            </div>
+        </div>
+
+        <!-- מסך משחק -->
+        <div id="game-screen" class="screen" role="main">
+            <div class="game-header">
+                <div class="players-info">
+                    <div class="player-card" id="player1-card">
+                        <div class="player-name-display" id="player1-display">
+                            <span class="player-emoji" id="player1-emoji">😊</span>
+                            <span>שחקן 1</span>
+                        </div>
+                        <div class="failures"><span class="interactive-icon">❌</span> <span id="player1-failures">0</span></div>
+                    </div>
+                    <div class="player-card">
+                        <div>שאלה <span id="current-question">1</span>/40</div>
+                        <div class="circular-progress">
+                            <svg class="progress-ring" width="60" height="60">
+                                <circle class="progress-ring-circle" stroke="rgba(255,255,255,0.2)" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
+                                <circle class="progress-ring-progress" stroke="url(#progressGradient)" stroke-width="4" fill="transparent" r="26" cx="30" cy="30" id="progress-circle"/>
+                                <defs>
+                                    <linearGradient id="progressGradient">
+                                        <stop offset="0%" stop-color="#4ecdc4"/>
+                                        <stop offset="100%" stop-color="#44a08d"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="progress-text" id="progress-text">1/40</div>
+                        </div>
+                    </div>
+                    <div class="player-card" id="player2-card">
+                        <div class="player-name-display" id="player2-display">
+                            <span class="player-emoji" id="player2-emoji">😎</span>
+                            <span>שחקן 2</span>
+                        </div>
+                        <div class="failures"><span class="interactive-icon">❌</span> <span id="player2-failures">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="question-card" id="question-display" role="alert" aria-live="polite">
+                    שאלה תופיע כאן
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <div class="controls">
+                    <button class="btn btn-success" onclick="answerQuestion(1, event)" aria-label="שחקן ראשון ניצח">
+                        <span class="interactive-icon">🏆</span> <span id="player1-btn">שחקן 1 ניצח</span>
+                    </button>
+                    <button class="btn btn-success" onclick="answerQuestion(2, event)" aria-label="שחקן שני ניצח">
+                        <span class="interactive-icon">🏆</span> <span id="player2-btn">שחקן 2 ניצח</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="answerQuestion('both', event)" aria-label="שני השחקנים הצליחו">
+                        <span class="interactive-icon">✅</span> שנינו הצלחנו
+                    </button>
+                    <button class="btn btn-danger" onclick="answerQuestion('none', event)" aria-label="שני השחקנים לא זכרו">
+                        <span class="interactive-icon">❌</span> שנינו לא זכרנו
+                    </button>
+                </div>
+
+                <div class="secondary-controls">
+                    <button class="btn btn-warning" onclick="undoLastAction()" aria-label="בטל פעולה אחרונה"><span class="interactive-icon">🔁</span> בטל פעולה</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- מסך תוצאות -->
+        <div id="results-screen" class="screen" role="main">
+            <div class="screen-content">
+                <div class="title"><span class="interactive-icon">🏆</span> תוצאות המשחק!</div>
+                <div class="card">
+                    <div id="final-results"></div>
+                </div>
+                
+                <!-- חלק המשוב -->
+                <div class="feedback-section">
+                    <h3><span class="interactive-icon">📝</span> איך היה המשחק?</h3>
+                    <p>נשמח לשמוע את המשוב שלכם!</p>
+                    <div class="input-group">
+                        <textarea id="feedback-text" placeholder="ספרו לנו איך היה המשחק, מה אהבתם ומה ניתן לשפר..." maxlength="500"></textarea>
+                    </div>
+                    <button class="btn btn-success" onclick="submitFeedback()"><span class="interactive-icon">📤</span> שלח משוב</button>
+                </div>
+            </div>
+            <div class="screen-actions">
+                <button class="btn btn-share" onclick="shareResults()" aria-label="שתף תוצאות בווטסאפ"><span class="interactive-icon">📱</span> שתף בווטסאפ</button>
+                <button class="btn" onclick="restartGame()" aria-label="התחל משחק חדש"><span class="interactive-icon">🔄</span> משחק חדש</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- פופאפים -->
+    
+    <!-- פופאפ הגדרות -->
+    <div id="settings-popup" class="popup" role="dialog" aria-labelledby="settings-title">
+        <div class="popup-content">
+            <div class="title" id="settings-title"><span class="interactive-icon">⚙️</span> הגדרות</div>
+            
+            <!-- שינוי שמות שחקנים -->
+            <div class="settings-section" id="players-settings-section">
+                <button class="btn btn-small" onclick="toggleSettingsSection('players')">
+                    <span class="interactive-icon">👥</span> שינוי שם שחקנים
+                </button>
+                <div class="hidden-content" id="players-content">
+                    <div class="input-group">
+                        <label for="settings-player1-name">שם שחקן 1:</label>
+                        <input type="text" id="settings-player1-name" maxlength="15">
+                    </div>
+                    <div class="input-group">
+                        <label for="settings-player2-name">שם שחקן 2:</label>
+                        <input type="text" id="settings-player2-name" maxlength="15">
+                    </div>
+                </div>
+            </div>
+
+            <!-- שינוי פרס -->
+            <div class="settings-section" id="prize-settings-section">
+                <button class="btn btn-small" onclick="toggleSettingsSection('prize')">
+                    <span class="interactive-icon">🏆</span> שינוי הפרס
+                </button>
+                <div class="hidden-content" id="prize-content">
+                    <div class="input-group">
+                        <label for="settings-prize">הפרס:</label>
+                        <input type="text" id="settings-prize" maxlength="50">
+                    </div>
+                </div>
+            </div>
+
+            <!-- יצירת קשר -->
+            <div class="settings-section" id="contact-settings-section">
+                <button class="btn btn-small" onclick="toggleSettingsSection('contact')">
+                    <span class="interactive-icon">💌</span> יצירת קשר
+                </button>
+                <div class="hidden-content" id="contact-content">
+                    <p>למשוב, הצעות או שאלות:</p>
+                    <p style="direction: ltr; font-weight: bold;">rotemadini@gmail.com</p>
+                    <div class="input-group">
+                        <label for="contact-message">השאר הודעה:</label>
+                        <textarea id="contact-message" placeholder="כתוב כאן את ההודעה שלך..." maxlength="300"></textarea>
+                    </div>
+                    <button class="btn btn-small" onclick="sendContactMessage()">
+                        <span class="interactive-icon">📧</span> שלח הודעה
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <button class="btn btn-success" onclick="saveSettings()" aria-label="שמור שינויים"><span class="interactive-icon">💾</span> שמור שינויים</button>
+                <button class="btn btn-secondary" onclick="closeSettings()" aria-label="סגור הגדרות"><span class="interactive-icon">❌</span> סגור</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- פופאפ הודעה על 3 פסילות -->
+    <div id="failure-warning-popup" class="popup" role="dialog" aria-labelledby="failure-warning-title">
+        <div class="popup-content">
+            <div class="title" id="failure-warning-title" style="color: #ff6b6b;"><span class="interactive-icon">😱</span> אוי אוי אוי!</div>
+            <div id="failure-warning-content" style="font-size: 1.4rem; margin: 2rem 0;"></div>
+            <button class="btn btn-danger" onclick="showSensualTask()" aria-label="קבל משימה"><span class="interactive-icon">😈</span> כן, אני מוכן/ה למשימה!</button>
+            <button class="btn btn-secondary" onclick="skipTask()" aria-label="דלג על משימה"><span class="interactive-icon">😅</span> אולי פעם הבאה...</button>
+        </div>
+    </div>
+
+    <!-- פופאפ למשימה חושנית -->
+    <div id="task-popup" class="popup" role="dialog" aria-labelledby="task-title">
+        <div class="popup-content">
+            <div class="title" id="task-title"><span class="interactive-icon">💕</span> המשימה שלכם!</div>
+            <div id="task-content" style="font-size: 1.3rem; margin: 2rem 0;"></div>
+            <button class="btn btn-success" onclick="completeTask()" aria-label="סיים משימה"><span class="interactive-icon">✅</span> ביצענו את המשימה</button>
+        </div>
+    </div>
+
+    <!-- פופאפ להודעה על 2 פסילות רצופות -->
+    <div id="message-popup" class="popup" role="dialog" aria-labelledby="message-title">
+        <div class="popup-content">
+            <div id="message-content"></div>
+            <button class="btn" onclick="closeMessagePopup()" aria-label="סגור הודעה"><span class="interactive-icon">✅</span> הבנתי</button>
+        </div>
+    </div>
+
+    <!-- פופאפ אישור ביטול פעולה -->
+    <div id="undo-confirmation-popup" class="popup" role="dialog" aria-labelledby="undo-confirmation-title">
+        <div class="popup-content">
+            <div class="title" id="undo-confirmation-title"><span class="interactive-icon">🔁</span> בטל פעולה</div>
+            <div id="undo-confirmation-content" style="font-size: 1.2rem; margin: 2rem 0;"></div>
+            <button class="btn btn-danger" onclick="confirmUndo()" aria-label="אשר ביטול"><span class="interactive-icon">✅</span> כן, בטל</button>
+            <button class="btn btn-secondary" onclick="cancelUndo()" aria-label="בטל ביטול"><span class="interactive-icon">❌</span> לא, השאר</button>
+        </div>
+    </div>
+<script src="script.js" defer></script>
+</body>
+</html>

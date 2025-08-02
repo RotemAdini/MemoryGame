@@ -1,0 +1,1474 @@
+/* איפוס בסיסי ומחלקות עזר */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    touch-action: manipulation;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(180deg, #0a0a23 0%, #1a1a3a 30%, #2d1b69 60%, #8b2b9b 100%);
+    background-attachment: fixed;
+    color: white;
+    text-align: center;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* אנימציית רקע משופרת - עובדת בכל הפלטפורמות */
+.synthwave-grid {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) perspective(500px) rotateX(60deg);
+    width: 200%;
+    height: 50vh;
+    background: 
+        linear-gradient(to bottom, transparent 0%, rgba(255, 0, 150, 0.1) 100%),
+        linear-gradient(rgba(255, 0, 150, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 0, 150, 0.3) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    animation: gridMove 10s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+    will-change: transform;
+    opacity: 0.8;
+}
+
+/* אנימציות משופרות */
+@keyframes gridMove {
+    0% { transform: translateX(-50%) perspective(500px) rotateX(60deg) translateZ(0); }
+    100% { transform: translateX(-50%) perspective(500px) rotateX(60deg) translateZ(40px); }
+}
+
+@keyframes slideInFromRight {
+    0% { 
+        opacity: 0; 
+        transform: translateX(100%); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateX(0); 
+    }
+}
+
+@keyframes slideInFromLeft {
+    0% { 
+        opacity: 0; 
+        transform: translateX(-100%); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateX(0); 
+    }
+}
+
+@keyframes fadeInUp {
+    0% { 
+        opacity: 0; 
+        transform: translateY(50px) scale(0.95); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+@keyframes zoomIn {
+    0% { 
+        opacity: 0; 
+        transform: scale(0.8) rotate(-5deg); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1) rotate(0deg); 
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes glowPulse {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(255, 0, 132, 0.5);
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(255, 0, 132, 0.8), 0 0 60px rgba(0, 255, 255, 0.4);
+    }
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-10px) rotate(5deg); }
+    75% { transform: translateY(-5px) rotate(-3deg); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+@keyframes confetti {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes buttonHover {
+    0% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.05); }
+    100% { transform: translateY(-5px) scale(1.03); }
+}
+
+@keyframes cardFloat {
+    0%, 100% { transform: translateY(0) rotateX(0); }
+    50% { transform: translateY(-10px) rotateX(2deg); }
+}
+
+@keyframes countUp {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes warningPulse {
+    0%, 100% { 
+        border-color: rgba(255, 107, 107, 0.5);
+        box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+    }
+    50% { 
+        border-color: rgba(255, 107, 107, 1);
+        box-shadow: 0 0 25px rgba(255, 107, 107, 0.7);
+    }
+}
+
+/* אנימציות משופרות לכפתורים */
+@keyframes btnSuccess {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); background: linear-gradient(45deg, #4CAF50, #8BC34A); }
+    100% { transform: scale(1); }
+}
+
+@keyframes btnError {
+    0% { transform: scale(1); }
+    25% { transform: translateX(-5px); background: linear-gradient(45deg, #f44336, #FF5722); }
+    75% { transform: translateX(5px); }
+    100% { transform: scale(1); }
+}
+
+@keyframes questionChange {
+    0% { transform: scale(1) rotateX(0deg); opacity: 1; }
+    50% { transform: scale(0.95) rotateX(10deg); opacity: 0.7; }
+    100% { transform: scale(1) rotateX(0deg); opacity: 1; }
+}
+
+/* מבנה עמוד */
+.container {
+    width: 100vw;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.screen {
+    display: none !important;
+    width: 100%;
+    height: 100%;
+}
+
+.screen.active {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    height: 100dvh;
+    overflow: hidden;
+    padding: 10px;
+    animation: fadeInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.screen.slide-right {
+    animation: slideInFromRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.screen.slide-left {
+    animation: slideInFromLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.screen.zoom {
+    animation: zoomIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* מבנה כללי למסכים רגילים */
+.screen-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    overflow-y: auto;
+    padding: 5px 10px;
+    padding-top: 0;
+}
+
+.screen-actions {
+    padding: 8px 0;
+    width: 100%;
+    max-width: 600px;
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+/* מסך השחקנים - גלילה טובה יותר */
+#players-screen .screen-content {
+    justify-content: flex-start;
+    padding-top: 5px;
+    gap: 0;
+}
+
+#players-screen .card {
+    padding: clamp(0.6rem, 2vw, 1rem);
+    margin: 0.2rem 0;
+    max-height: none;
+    flex-shrink: 0;
+}
+
+#players-screen .input-group {
+    margin: 0.4rem 0;
+}
+
+#players-screen .emoji-selector {
+    gap: 5px;
+    margin: 0.3rem 0;
+}
+
+#players-screen .emoji-option {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+}
+
+#players-screen .title {
+    font-size: clamp(1.4rem, 4.5vw, 2rem);
+    margin-bottom: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* מסך ההסבר - גלילה טובה יותר */
+#rules-screen .screen-content {
+    justify-content: flex-start;
+    padding-top: 5px;
+    gap: 0;
+}
+
+#rules-screen .card {
+    padding: clamp(0.8rem, 2.5vw, 1.2rem);
+    margin: 0.3rem 0;
+    flex-shrink: 0;
+}
+
+#rules-screen .title {
+    font-size: clamp(1.4rem, 4.5vw, 2rem);
+    margin-bottom: 0.5rem;
+    flex-shrink: 0;
+}
+
+#rules-screen ul {
+    font-size: clamp(0.9rem, 2.3vw, 1.1rem);
+    line-height: 1.8;
+    margin: 0.5rem 0;
+}
+
+#rules-screen .info-box {
+    padding: clamp(0.8rem, 2vw, 1.2rem);
+    margin: 0.5rem 0;
+}
+
+/* מסך המשחק - מבנה שונה */
+#game-screen.active {
+    justify-content: flex-start;
+    padding-top: 60px;
+}
+
+#game-screen .game-header {
+    width: 100%;
+    max-width: 900px;
+    flex-shrink: 0;
+}
+
+#game-screen .game-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    min-height: 0;
+}
+
+#game-screen .game-controls {
+    padding: 8px 0;
+    width: 100%;
+    max-width: 600px;
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+/* טקסט ואלמנטים */
+.title {
+    font-size: clamp(1.8rem, 5.5vw, 2.8rem);
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+    background: linear-gradient(45deg, #fff, #f0f0f0, #fff);
+    background-size: 200% 200%;
+    animation: shimmer 3s ease-in-out infinite, pulse 3s infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-size: clamp(0.9rem, 2.8vw, 1.2rem);
+    margin-bottom: 0.8rem;
+    opacity: 0.9;
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.card {
+    background: rgba(26, 0, 51, 0.3);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: clamp(1.2rem, 3.5vw, 2rem);
+    margin: 0.5rem 0;
+    border: 2px solid #ff0084;
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(255, 0, 132, 0.3),
+        inset 0 0 30px rgba(0, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    width: 100%;
+    max-width: 600px;
+    animation: cardFloat 4s ease-in-out infinite;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.02);
+    animation-play-state: paused;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 50px rgba(255, 0, 132, 0.5),
+        inset 0 0 40px rgba(0, 255, 255, 0.2);
+}
+
+/* כפתורים */
+.btn {
+    background: linear-gradient(45deg, #ff0084, #00ffff);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-size: clamp(0.9rem, 2.3vw, 1.1rem);
+    font-weight: bold;
+    cursor: pointer;
+    margin: 8px auto;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(255, 0, 132, 0.5);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    display: block;
+    position: relative;
+    overflow: hidden;
+    transform-origin: center;
+    transform: translateZ(0);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:active::after {
+    width: 300px;
+    height: 300px;
+    transition: width 0.1s, height 0.1s;
+}
+
+.btn:hover {
+    animation: buttonHover 0.6s ease-out;
+    animation-fill-mode: forwards;
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(255, 0, 132, 0.8),
+        0 0 60px rgba(0, 255, 255, 0.4);
+}
+
+.btn:active {
+    transform: scale(0.95) translateY(-2px);
+    transition: transform 0.1s ease-out;
+}
+
+.btn:focus {
+    outline: 3px solid rgba(255, 255, 255, 0.7);
+    outline-offset: 2px;
+}
+
+.btn-feedback-success {
+    animation: btnSuccess 0.6s ease-out;
+}
+
+.btn-feedback-error {
+    animation: btnError 0.6s ease-out;
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    animation: glowPulse 3s infinite;
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+}
+
+.btn-warning {
+    background: linear-gradient(45deg, #f093fb, #f5576c);
+}
+
+.btn-share {
+    background: linear-gradient(45deg, #25D366, #128C7E);
+}
+
+.btn-small {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    margin: 4px;
+    display: inline-block;
+}
+
+/* שדות קלט */
+.input-group {
+    margin: 0.8rem 0;
+    text-align: center;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: bold;
+    font-size: clamp(0.9rem, 2.3vw, 1rem);
+}
+
+.input-group input, .input-group select, .input-group textarea {
+    width: 100%;
+    max-width: 380px;
+    padding: 10px;
+    border-radius: 18px;
+    border: none;
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    margin: 0 auto;
+    display: block;
+}
+
+.input-group textarea {
+    min-height: 70px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+    outline: none;
+    transform: scale(1.03);
+    box-shadow: 0 0 18px rgba(255, 0, 132, 0.5);
+    background: rgba(255, 255, 255, 1);
+}
+
+/* בוחר אמוג'י */
+.emoji-selector {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0.8rem 0;
+}
+
+.emoji-option {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emoji-option:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.emoji-option.selected {
+    border-color: #ff0084;
+    background: rgba(255, 0, 132, 0.3);
+    transform: scale(1.2);
+}
+
+/* פרטי שחקנים */
+.players-info {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.8rem 0;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.player-card {
+    flex: 1;
+    min-width: 130px;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 18px;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 2px solid transparent;
+}
+
+.player-card:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 0, 132, 0.5);
+    transform: translateY(-5px);
+}
+
+.player-card:nth-child(2) {
+    flex: 1.5;
+}
+
+.player-card.warning {
+    animation: warningPulse 1s infinite;
+}
+
+.failures {
+    color: #ff6b6b;
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin-top: 4px;
+    animation: iconBounce 2s infinite;
+}
+
+.player-name-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-weight: bold;
+}
+
+.player-emoji {
+    font-size: 1.1em;
+}
+
+/* קארד שאלה */
+.question-card {
+    background: rgba(26, 0, 51, 0.4);
+    border-radius: 25px;
+    padding: clamp(2rem, 7vw, 3.5rem) clamp(1.5rem, 5vw, 2.5rem);
+    margin: 0.8rem 0;
+    font-size: clamp(1.4rem, 5.5vw, 2.3rem);
+    line-height: 1.5;
+    border: 3px solid #00ffff;
+    box-shadow: 
+        0 15px 50px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(0, 255, 255, 0.4),
+        inset 0 0 40px rgba(255, 0, 132, 0.1);
+    min-height: clamp(180px, 23vh, 280px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+    width: 100%;
+    max-width: 800px;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation: cardFloat 6s ease-in-out infinite;
+    text-align: center;
+}
+
+.question-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    animation-play-state: paused;
+}
+
+.question-card.changing {
+    animation: questionChange 0.6s ease-in-out;
+}
+
+/* כותרת חלק */
+.chapter-title {
+    font-size: clamp(1.3rem, 4.5vw, 2.3rem);
+    font-weight: bold;
+    margin: 1.5rem 0;
+    text-align: center;
+    background: linear-gradient(45deg, #ffeaa7, #fab1a0, #ffeaa7);
+    background-size: 200% 200%;
+    animation: shimmer 2s ease-in-out infinite, pulse 2s infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* טיימר */
+.timer {
+    font-size: clamp(4rem, 18vw, 9rem);
+    font-weight: bold;
+    margin: 1.5rem 0;
+    text-shadow: 5px 5px 10px rgba(0,0,0,0.7);
+    animation: pulse 1s infinite, glowPulse 2s infinite;
+}
+
+/* בקרות */
+.controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0.8rem auto;
+    width: 100%;
+    max-width: 600px;
+}
+
+.controls .btn {
+    width: 100%;
+    padding: 10px;
+    font-size: clamp(0.8rem, 2.1vw, 0.95rem);
+    margin: 0;
+    display: inline-block;
+}
+
+.secondary-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0.6rem auto;
+    max-width: 600px;
+}
+
+.secondary-controls .btn {
+    display: inline-block;
+    margin: 0;
+    font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+    padding: 8px 16px;
+}
+
+/* מחוון התקדמות עגול */
+.circular-progress {
+    position: relative;
+    display: inline-block;
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+}
+
+.progress-ring-circle {
+    transition: stroke-dasharray 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.progress-ring-progress {
+    stroke-dasharray: 164 164;
+    stroke-dashoffset: 164;
+    transition: stroke-dashoffset 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: white;
+}
+
+/* פופאפים */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 15px;
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.popup-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: clamp(1.5rem, 4.5vw, 2.5rem);
+    border-radius: 25px;
+    text-align: center;
+    max-width: 580px;
+    width: 100%;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    max-height: 88vh;
+    overflow-y: auto;
+    animation: zoomIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.popup-content .btn {
+    display: inline-block;
+    margin: 8px;
+}
+
+/* מתג העברה */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 65px;
+    height: 36px;
+    margin: 0 12px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 36px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 28px;
+    width: 28px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+}
+
+input:checked + .slider:before {
+    transform: translateX(29px);
+}
+
+.slider:hover:before {
+    box-shadow: 0 0 15px rgba(255, 0, 132, 0.5);
+}
+
+/* אנימציית ניקוד */
+.score-animation {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #4ecdc4;
+    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.celebration {
+    animation: pulse 0.5s infinite alternate;
+}
+
+/* תיבת מידע */
+.info-box {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 18px;
+    padding: 1.2rem;
+    margin: 1rem 0;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.info-box:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 0, 132, 0.5);
+}
+
+/* אזהרה חושנית */
+.sensual-warning {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+    color: white;
+    padding: 0.8rem;
+    border-radius: 13px;
+    margin: 0.8rem 0;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+    font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+}
+
+/* כפתורי הגדרות וצליל */
+.settings-btn, .sound-btn {
+    position: fixed;
+    top: 15px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    backdrop-filter: blur(10px);
+}
+
+.settings-btn {
+    left: 15px;
+}
+
+.settings-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(180deg) scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 0, 132, 0.5);
+}
+
+.settings-btn:focus {
+    outline: 3px solid rgba(255, 255, 255, 0.7);
+    outline-offset: 2px;
+}
+
+.sound-btn {
+    right: 15px;
+    font-size: 1.1rem;
+}
+
+.sound-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.sound-btn:focus {
+    outline: 3px solid rgba(255, 255, 255, 0.7);
+    outline-offset: 2px;
+}
+
+.sound-btn.muted {
+    background: rgba(255, 107, 107, 0.3);
+    border-color: rgba(255, 107, 107, 0.5);
+}
+
+/* confetti */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: #ff0084;
+    animation: confetti 3s linear;
+    z-index: 1001;
+    will-change: transform;
+}
+
+.confetti:nth-child(even) {
+    background: #00ffff;
+    animation-delay: 0.5s;
+}
+
+.confetti:nth-child(3n) {
+    background: #ffeaa7;
+    animation-delay: 0.3s;
+}
+
+/* אייקונים אינטראקטיביים */
+.interactive-icon {
+    display: inline-block;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+}
+
+.interactive-icon:hover {
+    animation: iconBounce 0.6s ease-out;
+    filter: drop-shadow(0 0 10px rgba(255, 0, 132, 0.8));
+}
+
+/* הגדרות */
+.settings-section {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 13px;
+    padding: 1.2rem;
+    margin: 0.8rem 0;
+    transition: all 0.3s ease;
+}
+
+.settings-section.expanded {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 0, 132, 0.5);
+}
+
+.settings-section h3 {
+    margin-bottom: 0.8rem;
+    color: #fff;
+}
+
+.hidden-content {
+    display: none;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.hidden-content.show {
+    display: block;
+}
+
+/* משוב */
+.feedback-section {
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid rgba(0, 255, 0, 0.3);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+/* מחלקות נגישות */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* הודעת שגיאה */
+.error-message {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    color: white;
+    padding: 0.8rem;
+    border-radius: 13px;
+    margin: 0.8rem 0;
+    font-weight: bold;
+    animation: pulse 1s;
+}
+
+/* RESPONSIVE DESIGN */
+
+/* אופטימיזציה למובייל */
+@media (max-width: 768px) {
+    .screen.active {
+        padding: 5px;
+    }
+    
+    #game-screen.active {
+        padding-top: 50px;
+    }
+
+    #players-screen .screen-content,
+    #rules-screen .screen-content {
+        padding-top: 2px;
+    }
+
+    #players-screen .card,
+    #rules-screen .card {
+        padding: 0.6rem;
+        margin: 0.15rem 0;
+    }
+
+    #players-screen .input-group,
+    #rules-screen .input-group {
+        margin: 0.3rem 0;
+    }
+
+    #players-screen .emoji-option {
+        width: 32px;
+        height: 32px;
+        font-size: 0.95rem;
+    }
+
+    #players-screen .title,
+    #rules-screen .title {
+        font-size: 1.3rem;
+        margin-bottom: 0.4rem;
+    }
+
+    #rules-screen ul {
+        font-size: 0.85rem;
+        line-height: 1.6;
+        margin: 0.3rem 0;
+    }
+
+    #rules-screen .info-box {
+        padding: 0.6rem;
+        margin: 0.4rem 0;
+    }
+    
+    .title { 
+        font-size: 1.4rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .subtitle { 
+        font-size: 0.9rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .card {
+        padding: 0.8rem;
+        margin: 0.3rem 0;
+    }
+    
+    .players-info { 
+        gap: 6px;
+        margin: 0.6rem 0;
+    }
+    
+    .player-card {
+        padding: 0.6rem;
+        min-width: 90px;
+        font-size: 0.85rem;
+    }
+    
+    .question-card { 
+        font-size: 1.2rem;
+        padding: 1.5rem 1rem;
+        margin: 0.6rem 0;
+        min-height: 160px;
+    }
+    
+    .controls { 
+        gap: 6px;
+        margin: 0.6rem 0;
+    }
+    
+    .controls .btn {
+        padding: 8px 4px;
+        font-size: 0.75rem;
+    }
+    
+    .secondary-controls {
+        gap: 4px;
+        margin: 0.4rem 0;
+    }
+    
+    .secondary-controls .btn {
+        font-size: 0.7rem;
+        padding: 6px 12px;
+    }
+    
+    .btn { 
+        font-size: 0.85rem;
+        padding: 10px 16px;
+    }
+    
+    .timer { 
+        font-size: 3rem;
+        margin: 0.8rem 0;
+    }
+    
+    .chapter-title {
+        font-size: 1.2rem;
+        margin: 1rem 0;
+    }
+    
+    .settings-btn, .sound-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+        top: 10px;
+    }
+    
+    .settings-btn {
+        left: 10px;
+    }
+    
+    .sound-btn {
+        right: 10px;
+    }
+    
+    .popup-content {
+        padding: 1.2rem;
+        max-height: 82vh;
+    }
+    
+    .popup-content .btn {
+        font-size: 0.8rem;
+        padding: 8px 14px;
+        margin: 4px;
+    }
+    
+    .info-box {
+        padding: 0.8rem;
+        margin: 0.6rem 0;
+    }
+    
+    .sensual-warning {
+        padding: 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .emoji-selector {
+        gap: 4px;
+    }
+
+    .emoji-option {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+    }
+
+    .feedback-section {
+        padding: 1rem;
+    }
+
+    .progress-text {
+        font-size: 0.75rem;
+    }
+}
+
+/* מסכים קטנים מאוד */
+@media (max-width: 360px) {
+    .title { font-size: 1.2rem; }
+    .subtitle { font-size: 0.8rem; }
+    .question-card { font-size: 1rem; padding: 1.2rem; min-height: 140px; }
+    .controls .btn { font-size: 0.7rem; padding: 6px 3px; }
+    .player-card { font-size: 0.75rem; padding: 0.4rem; }
+
+    #players-screen .title,
+    #rules-screen .title { font-size: 1.1rem; }
+    #players-screen .card,
+    #rules-screen .card { padding: 0.5rem; }
+    #players-screen .emoji-option { width: 28px; height: 28px; font-size: 0.85rem; }
+    #rules-screen ul { font-size: 0.8rem; line-height: 1.5; }
+}
+
+/* טאבלטים */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .screen.active {
+        padding: 15px;
+    }
+    
+    #game-screen.active {
+        padding-top: 70px;
+    }
+    
+    .question-card {
+        font-size: 1.8rem;
+        padding: 2.5rem 2rem;
+        min-height: 220px;
+    }
+    
+    .controls .btn {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    
+    .secondary-controls .btn {
+        font-size: 0.8rem;
+        padding: 10px 20px;
+    }
+}
+
+/* גבהים נמוכים */
+@media (max-height: 700px) {
+    .screen.active { padding: 3px; }
+    #game-screen.active { padding-top: 40px; }
+    #players-screen .screen-content,
+    #rules-screen .screen-content { padding-top: 2px; }
+    .title { margin-bottom: 0.3rem; }
+    .card { margin: 0.2rem 0; padding: 0.8rem; }
+    .question-card { margin: 0.3rem 0; padding: 1.2rem; min-height: 100px; }
+    .controls { margin: 0.3rem 0; }
+    .timer { font-size: 2.5rem; margin: 0.8rem 0; }
+    .players-info { margin: 0.3rem 0; }
+
+    #players-screen .card,
+    #rules-screen .card { padding: 0.5rem; margin: 0.1rem 0; }
+    #players-screen .input-group,
+    #rules-screen .input-group { margin: 0.2rem 0; }
+    #rules-screen ul { margin: 0.2rem 0; }
+}
+
+/* תיקון למסך הסבר כדי שהכפתור יהיה נגיש */
+@media (max-height: 750px) {
+    #rules-screen ul {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    #rules-screen .info-box {
+        padding: 0.8rem;
+        margin: 0.4rem 0;
+    }
+    
+    #rules-screen .card {
+        padding: 1rem;
+        margin: 0.3rem 0;
+    }
+    
+    #rules-screen .title {
+        font-size: 1.6rem;
+        margin-bottom: 0.6rem;
+    }
+
+    #results-screen .screen-content {
+        overflow-y: auto;
+        max-height: calc(100vh - 80px);
+    }
+}
+
+@media (max-height: 650px) {
+    #rules-screen ul {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    
+    #rules-screen .info-box {
+        padding: 0.6rem;
+        margin: 0.3rem 0;
+    }
+    
+    #rules-screen .sensual-warning {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    #rules-screen .title {
+        font-size: 1.4rem;
+        margin-bottom: 0.4rem;
+    }
+}
+
+/* וידוא שהרקע יעבוד בכל המכשירים */
+@supports (-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px)) {
+    .synthwave-grid {
+        opacity: 1;
+    }
+}
+/* תיקונים נוספים למסך התוצאות - מניעת גלילה */
+
+/* תיקון למסך התוצאות */
+#results-screen .screen-content {
+    justify-content: flex-start;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+    padding-top: 5px;
+}
+
+#results-screen .card {
+    margin: 0.5rem 0;
+    padding: 1rem;
+}
+
+#results-screen .feedback-section {
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid rgba(0, 255, 0, 0.3);
+    border-radius: 15px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+#results-screen .feedback-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+#results-screen .feedback-section p {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+#results-screen .feedback-section textarea {
+    min-height: 60px;
+    margin: 0.5rem 0;
+}
+
+#results-screen .title {
+    font-size: clamp(1.4rem, 4.5vw, 2rem);
+    margin-bottom: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* תיקונים למובייל במסך התוצאות */
+@media (max-width: 768px) {
+    #results-screen .screen-content {
+        max-height: calc(100vh - 80px);
+        padding-top: 2px;
+    }
+    
+    #results-screen .card {
+        padding: 0.8rem;
+        margin: 0.3rem 0;
+    }
+    
+    #results-screen .feedback-section {
+        padding: 0.8rem;
+        margin: 0.8rem 0;
+    }
+    
+    #results-screen .feedback-section h3 {
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    #results-screen .feedback-section p {
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    #results-screen .title {
+        font-size: 1.3rem;
+        margin-bottom: 0.4rem;
+    }
+}
+
+/* תיקונים לגבהים נמוכים במסך התוצאות */
+@media (max-height: 700px) {
+    #results-screen .screen-content {
+        max-height: calc(100vh - 70px);
+    }
+    
+    #results-screen .card {
+        padding: 0.6rem;
+        margin: 0.2rem 0;
+    }
+    
+    #results-screen .feedback-section {
+        padding: 0.6rem;
+        margin: 0.5rem 0;
+    }
+    
+    #results-screen .title {
+        margin-bottom: 0.3rem;
+    }
+}
+
+@media (max-height: 650px) {
+    #results-screen .screen-content {
+        max-height: calc(100vh - 60px);
+    }
+    
+    #results-screen .feedback-section {
+        padding: 0.5rem;
+        margin: 0.4rem 0;
+    }
+    
+    #results-screen .feedback-section h3 {
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    #results-screen .feedback-section p {
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    #results-screen .feedback-section textarea {
+        min-height: 50px;
+        margin: 0.3rem 0;
+    }
+}
+
+/* תיקון נוסף לפופאפ כאשר לא נבחרו משימות חושניות */
+.failure-warning-no-tasks {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b) !important;
+    color: white !important;
+}
+
+.failure-warning-no-tasks .btn-secondary {
+    display: none !important;
+}
+/* הוסף את הכללים האלה לקובץ ה-CSS: */
+
+.emoji-custom {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d) !important;
+    border: 2px solid #00ffff !important;
+    color: white;
+    font-weight: bold;
+}
+
+.emoji-custom:hover {
+    background: linear-gradient(45deg, #44a08d, #4ecdc4) !important;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+.emoji-custom.active {
+    background: linear-gradient(45deg, #ff0084, #00ffff) !important;
+    animation: pulse 1s infinite;
+}
+
+/* שדה קלט האמוג'י המותאם */
+#player1-custom-input, #player2-custom-input {
+    border: 2px solid #4ecdc4;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    transition: all 0.3s ease;
+}
+
+#player1-custom-input:focus, #player2-custom-input:focus {
+    border-color: #ff0084;
+    box-shadow: 0 0 20px rgba(255, 0, 132, 0.5);
+    transform: scale(1.05);
+}
