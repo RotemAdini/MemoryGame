@@ -1,11 +1,40 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0a23">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="screen-orientation" content="portrait">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
     <title>משחק הזיכרון הגדול</title>
     <link rel="stylesheet" href="styles.css">
-</head>
+    
+    <style>
+        html {
+            background-color: #0a0a23 !important;
+        }
+        
+        body {
+            background-color: #0a0a23 !important;
+            background-image: linear-gradient(180deg, #0a0a23 0%, #1a1a3a 30%, #2d1b69 60%, #8b2b9b 100%) !important;
+            background-attachment: scroll !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+        
+        @supports (-webkit-touch-callout: none) {
+            body {
+                background: linear-gradient(to bottom, #0a0a23, #1a1a3a, #2d1b69, #8b2b9b) !important;
+                min-height: -webkit-fill-available !important;
+            }
+        }
+    </style>
+</head>>
 <body>
     <div class="synthwave-grid"></div>
     
