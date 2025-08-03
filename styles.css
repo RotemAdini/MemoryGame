@@ -5,6 +5,13 @@
     box-sizing: border-box;
 }
 
+/* תיקון בסיסי לגובה מסך במובייל */
+html {
+    height: 100%;
+    /* תיקון עבור iOS Safari */
+    height: -webkit-fill-available;
+}
+
 html, body {
     height: 100dvh;
     margin: 0;
@@ -15,12 +22,43 @@ html, body {
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0a0a23;
+    background: -webkit-linear-gradient(top, #0a0a23 0%, #1a1a3a 30%, #2d1b69 60%, #8b2b9b 100%);
     background: linear-gradient(180deg, #0a0a23 0%, #1a1a3a 30%, #2d1b69 60%, #8b2b9b 100%);
-    background-attachment: fixed;
+    background-attachment: scroll; /* שינוי מ-fixed ל-scroll למובייל */
+    background-repeat: no-repeat;
+    background-size: cover;
     color: white;
     text-align: center;
     position: relative;
     min-height: 100vh;
+    min-height: -webkit-fill-available; /* תיקון עבור iOS */
+}
+
+/* תיקון רקע ספציפי למובייל */
+@media (max-width: 1024px) {
+    body {
+        background-attachment: scroll !important;
+        background: linear-gradient(180deg, #0a0a23 0%, #1a1a3a 30%, #2d1b69 60%, #8b2b9b 100%);
+        background-size: 100% 100%;
+    }
+}
+
+/* תיקון מיוחד עבור iOS */
+@supports (-webkit-touch-callout: none) {
+    html {
+        height: -webkit-fill-available;
+    }
+    
+    body {
+        min-height: -webkit-fill-available;
+        background-attachment: scroll !important;
+        background: linear-gradient(to bottom, #0a0a23, #1a1a3a, #2d1b69, #8b2b9b);
+    }
+    
+    .synthwave-grid {
+        display: none; /* הסתר גריד ב-iOS לביצועים טובים יותר */
+    }
 }
 
 /* אנימציית רקע משופרת - עובדת בכל הפלטפורמות */
@@ -40,7 +78,21 @@ body {
     pointer-events: none;
     z-index: -1;
     will-change: transform;
-    opacity: 0.8;
+    opacity: 0.6; /* הורדת השקיפות למובייל */
+}
+
+/* הסתרת גריד במכשירים חלשים */
+@media (max-width: 768px) {
+    .synthwave-grid {
+        opacity: 0.3; /* שקיפות נמוכה יותר במובייל */
+    }
+}
+
+/* הסתרת גריד במכשירים חלשים מאוד */
+@media (max-width: 480px) {
+    .synthwave-grid {
+        display: none; /* הסתרה מלאה במובייל קטן */
+    }
 }
 
 /* אנימציות משופרות */
@@ -217,7 +269,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-  justify-content: center;
+    justify-content: center;
     align-items: center;
     width: 100%;
     max-width: 900px;
@@ -302,7 +354,7 @@ body {
 /* מסך המשחק - מבנה שונה */
 #game-screen.active {
     justify-content: flex-start;
-    padding-top: 60px;
+    padding-top: 70px;
 }
 
 #game-screen .game-header {
@@ -320,6 +372,7 @@ body {
     width: 100%;
     max-width: 900px;
     min-height: 0;
+    padding: 10px;
 }
 
 #game-screen .game-controls {
@@ -508,7 +561,7 @@ body {
     padding: 10px;
     border-radius: 18px;
     border: none;
-    font-size: 0.95rem;
+    font-size: 16px !important; /* מניעת זום אוטומטי ב-iOS */
     background: rgba(255, 255, 255, 0.9);
     color: #333;
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -561,6 +614,39 @@ body {
     border-color: #ff0084;
     background: rgba(255, 0, 132, 0.3);
     transform: scale(1.2);
+}
+
+/* אמוג'י מותאם אישית */
+.emoji-custom {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d) !important;
+    border: 2px solid #00ffff !important;
+    color: white;
+    font-weight: bold;
+}
+
+.emoji-custom:hover {
+    background: linear-gradient(45deg, #44a08d, #4ecdc4) !important;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+.emoji-custom.active {
+    background: linear-gradient(45deg, #ff0084, #00ffff) !important;
+    animation: pulse 1s infinite;
+}
+
+/* שדה קלט האמוג'י המותאם */
+#player1-custom-input, #player2-custom-input {
+    border: 2px solid #4ecdc4;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    transition: all 0.3s ease;
+}
+
+#player1-custom-input:focus, #player2-custom-input:focus {
+    border-color: #ff0084;
+    box-shadow: 0 0 20px rgba(255, 0, 132, 0.5);
+    transform: scale(1.05);
 }
 
 /* פרטי שחקנים */
@@ -1013,6 +1099,73 @@ input:checked + .slider:before {
     animation: pulse 1s;
 }
 
+/* תיקון למסך התוצאות */
+#results-screen .screen-content {
+    justify-content: flex-start;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+    padding-top: 5px;
+}
+
+#results-screen .card {
+    margin: 0.5rem 0;
+    padding: 1rem;
+}
+
+#results-screen .feedback-section {
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid rgba(0, 255, 0, 0.3);
+    border-radius: 15px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+#results-screen .feedback-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+#results-screen .feedback-section p {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+#results-screen .feedback-section textarea {
+    min-height: 60px;
+    margin: 0.5rem 0;
+}
+
+#results-screen .title {
+    font-size: clamp(1.4rem, 4.5vw, 2rem);
+    margin-bottom: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* תיקון נוסף לפופאפ כאשר לא נבחרו משימות חושניות */
+.failure-warning-no-tasks {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b) !important;
+    color: white !important;
+}
+
+.failure-warning-no-tasks .btn-secondary {
+    display: none !important;
+}
+
+/* וידוא תמיכה ב-backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+    .card {
+        background: rgba(26, 0, 51, 0.8) !important;
+    }
+    
+    .popup-content {
+        background: rgba(102, 126, 234, 0.95) !important;
+    }
+    
+    .settings-btn, .sound-btn {
+        background: rgba(255, 255, 255, 0.8) !important;
+    }
+}
+
 /* RESPONSIVE DESIGN */
 
 /* אופטימיזציה למובייל */
@@ -1185,6 +1338,37 @@ input:checked + .slider:before {
     .progress-text {
         font-size: 0.75rem;
     }
+
+    /* תיקונים למובייל במסך התוצאות */
+    #results-screen .screen-content {
+        max-height: calc(100vh - 80px);
+        padding-top: 2px;
+    }
+    
+    #results-screen .card {
+        padding: 0.8rem;
+        margin: 0.3rem 0;
+    }
+    
+    #results-screen .feedback-section {
+        padding: 0.8rem;
+        margin: 0.8rem 0;
+    }
+    
+    #results-screen .feedback-section h3 {
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    #results-screen .feedback-section p {
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    #results-screen .title {
+        font-size: 1.3rem;
+        margin-bottom: 0.4rem;
+    }
 }
 
 /* מסכים קטנים מאוד */
@@ -1248,6 +1432,25 @@ input:checked + .slider:before {
     #players-screen .input-group,
     #rules-screen .input-group { margin: 0.2rem 0; }
     #rules-screen ul { margin: 0.2rem 0; }
+
+    /* תיקונים לגבהים נמוכים במסך התוצאות */
+    #results-screen .screen-content {
+        max-height: calc(100vh - 70px);
+    }
+    
+    #results-screen .card {
+        padding: 0.6rem;
+        margin: 0.2rem 0;
+    }
+    
+    #results-screen .feedback-section {
+        padding: 0.6rem;
+        margin: 0.5rem 0;
+    }
+    
+    #results-screen .title {
+        margin-bottom: 0.3rem;
+    }
 }
 
 /* תיקון למסך הסבר כדי שהכפתור יהיה נגיש */
@@ -1298,113 +1501,7 @@ input:checked + .slider:before {
         font-size: 1.4rem;
         margin-bottom: 0.4rem;
     }
-}
 
-/* וידוא שהרקע יעבוד בכל המכשירים */
-@supports (-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px)) {
-    .synthwave-grid {
-        opacity: 1;
-    }
-}
-/* תיקונים נוספים למסך התוצאות - מניעת גלילה */
-
-/* תיקון למסך התוצאות */
-#results-screen .screen-content {
-    justify-content: flex-start;
-    overflow-y: auto;
-    max-height: calc(100vh - 100px);
-    padding-top: 5px;
-}
-
-#results-screen .card {
-    margin: 0.5rem 0;
-    padding: 1rem;
-}
-
-#results-screen .feedback-section {
-    background: rgba(0, 255, 0, 0.1);
-    border: 2px solid rgba(0, 255, 0, 0.3);
-    border-radius: 15px;
-    padding: 1rem;
-    margin: 1rem 0;
-}
-
-#results-screen .feedback-section h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-}
-
-#results-screen .feedback-section p {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-#results-screen .feedback-section textarea {
-    min-height: 60px;
-    margin: 0.5rem 0;
-}
-
-#results-screen .title {
-    font-size: clamp(1.4rem, 4.5vw, 2rem);
-    margin-bottom: 0.5rem;
-    flex-shrink: 0;
-}
-
-/* תיקונים למובייל במסך התוצאות */
-@media (max-width: 768px) {
-    #results-screen .screen-content {
-        max-height: calc(100vh - 80px);
-        padding-top: 2px;
-    }
-    
-    #results-screen .card {
-        padding: 0.8rem;
-        margin: 0.3rem 0;
-    }
-    
-    #results-screen .feedback-section {
-        padding: 0.8rem;
-        margin: 0.8rem 0;
-    }
-    
-    #results-screen .feedback-section h3 {
-        font-size: 1rem;
-        margin-bottom: 0.4rem;
-    }
-    
-    #results-screen .feedback-section p {
-        font-size: 0.9rem;
-        margin-bottom: 0.4rem;
-    }
-    
-    #results-screen .title {
-        font-size: 1.3rem;
-        margin-bottom: 0.4rem;
-    }
-}
-
-/* תיקונים לגבהים נמוכים במסך התוצאות */
-@media (max-height: 700px) {
-    #results-screen .screen-content {
-        max-height: calc(100vh - 70px);
-    }
-    
-    #results-screen .card {
-        padding: 0.6rem;
-        margin: 0.2rem 0;
-    }
-    
-    #results-screen .feedback-section {
-        padding: 0.6rem;
-        margin: 0.5rem 0;
-    }
-    
-    #results-screen .title {
-        margin-bottom: 0.3rem;
-    }
-}
-
-@media (max-height: 650px) {
     #results-screen .screen-content {
         max-height: calc(100vh - 60px);
     }
@@ -1430,45 +1527,53 @@ input:checked + .slider:before {
     }
 }
 
-/* תיקון נוסף לפופאפ כאשר לא נבחרו משימות חושניות */
-.failure-warning-no-tasks {
-    background: linear-gradient(45deg, #ff416c, #ff4b2b) !important;
-    color: white !important;
+/* תיקון עבור מצב landscape במובייל */
+@media (orientation: landscape) and (max-height: 500px) {
+    .screen.active {
+        padding: 2px;
+    }
+    
+    #game-screen.active {
+        padding-top: 30px;
+    }
+    
+    .title {
+        font-size: 1.2rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .card {
+        padding: 0.5rem;
+        margin: 0.2rem 0;
+    }
+    
+    .question-card {
+        padding: 1rem;
+        min-height: 80px;
+        font-size: 1rem;
+    }
 }
 
-.failure-warning-no-tasks .btn-secondary {
-    display: none !important;
-}
-/* הוסף את הכללים האלה לקובץ ה-CSS: */
-
-.emoji-custom {
-    background: linear-gradient(45deg, #4ecdc4, #44a08d) !important;
-    border: 2px solid #00ffff !important;
-    color: white;
-    font-weight: bold;
+/* וידוא שהרקע יעבוד בכל המכשירים */
+@supports (-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px)) {
+    .synthwave-grid {
+        opacity: 1;
+    }
 }
 
-.emoji-custom:hover {
-    background: linear-gradient(45deg, #44a08d, #4ecdc4) !important;
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+/* תיקון אחרון - וידוא שהרקע יעבוד */
+html, body {
+    background-color: #0a0a23; /* צבע רקע חלופי */
 }
 
-.emoji-custom.active {
-    background: linear-gradient(45deg, #ff0084, #00ffff) !important;
-    animation: pulse 1s infinite;
-}
-
-/* שדה קלט האמוג'י המותאם */
-#player1-custom-input, #player2-custom-input {
-    border: 2px solid #4ecdc4;
-    border-radius: 15px;
-    background: rgba(255, 255, 255, 0.95);
-    transition: all 0.3s ease;
-}
-
-#player1-custom-input:focus, #player2-custom-input:focus {
-    border-color: #ff0084;
-    box-shadow: 0 0 20px rgba(255, 0, 132, 0.5);
-    transform: scale(1.05);
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #0a0a23 0%, #1a1a3a 30%, #2d1b69 60%, #8b2b9b 100%);
+    z-index: -2;
+    pointer-events: none;
 }
