@@ -34,7 +34,8 @@
             }
         }
     </style>
-</head>>
+	<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
 <body>
     <div class="synthwave-grid"></div>
     
@@ -150,42 +151,60 @@
             </div>
         </div>
 
-        <!-- מסך הסבר -->
-        <div id="rules-screen" class="screen" role="main">
-            <div class="screen-content">
-                <div class="title"><span class="interactive-icon">📋</span> איך המשחק עובד?</div>
-                <div class="card">
-                   <ul style="text-align: center; line-height: 1.8; list-style: none;">
-                        <li><span class="interactive-icon">🎯</span> המשחק מורכב מ-6 חלקים עם 40 שאלות</li>
-                        <li><span class="interactive-icon">🗣️</span> אתם עונים על השאלות בקול</li>
-                        <li><span class="interactive-icon">✅</span> לוחצים על הכפתור של מי שהצליח</li>
-                        <li><span class="interactive-icon">💥</span> כל 3 פסילות = משימה מיוחדת</li>
-                        <li><span class="interactive-icon">⚠️</span> 2 פסילות רצופות = הודעת עידוד</li>
-                        <li><span class="interactive-icon">🏆</span> בסוף נגלה מי המנצח!</li>
-                    </ul>
-                    
-                    <div class="info-box">
-                        <div class="input-group">
-                            <label style="font-size: 1.1rem;">האם לכלול משימות חושניות במשחק?</label>
-                            <div style="display: flex; align-items: center; justify-content: center; margin: 0.8rem 0;">
-                                <span style="font-size: 1rem;">כן</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="sensual-tasks" checked aria-label="כלול משימות חושניות">
-                                    <span class="slider"></span>
-                                </label>
-                                <span style="font-size: 1rem;">לא</span>
-                            </div>
-                            <div id="sensual-warning" class="sensual-warning">
-                                <span class="interactive-icon">⚠️</span> בחירה ב"כן" תוסיף משימות אינטימיות למשחק
-                            </div>
-                        </div>
-                    </div>
+     <!-- מסך הסבר - חלק 1 -->
+<div id="rules-screen" class="screen" role="main">
+    <div class="screen-content">
+        <div class="title"><span class="interactive-icon">📋</span> איך המשחק עובד?</div>
+        <div class="card">
+            <ul style="text-align: center; line-height: 1.8; list-style: none;">
+                <li><span class="interactive-icon">🔥</span> מוכנים לקרב זיכרון? 40 שאלות, 6 נושאים, שחקן אחד מנצח!</li>
+                <li><span class="interactive-icon">🗣️</span> מקריאים כל שאלה בקול — ונותנים למוח לעבוד</li>
+                <li><span class="interactive-icon">✅</span> מי זכר? לוחצים על הכפתור המתאים: שחקן א' / שחקן ב' / שנינו / אף אחד</li>
+                <li><span class="interactive-icon">🔁</span> טעיתם? רוצים לחזור צעד אחורה? יש גם כפתור "בטל פעולה"</li>
+                <li><span class="interactive-icon">⚙️</span> למעלה משמאל: שינוי שמות, בחירת פרס, התאמה אישית</li>
+                <li><span class="interactive-icon">🔇</span> למעלה מימין: שליטה באודיו למשחק בשקט</li>
+                <li><span class="interactive-icon">🏆</span> מי יזכה בתואר "אלוף הזיכרון"? רק אחד יעמוד אחרון!</li>
+            </ul>
+        </div>
+    </div>
+    <div class="screen-actions">
+        <button class="btn" onclick="nextScreen()" aria-label="המשך לשלב הבא"><span class="interactive-icon">➡️</span> המשך</button>
+    </div>
+</div>
+
+<!-- מסך הסבר - חלק 2 (הפלפל) -->
+<div id="spice-screen" class="screen" role="main">
+    <div class="screen-content">
+        <div class="title"><span class="interactive-icon">🌶️</span> רוצים להוסיף פלפל למשחק?</div>
+        <div class="card">
+            <ul style="text-align: center; line-height: 1.8; list-style: none;">
+                <li><span class="interactive-icon">🍻</span> <strong>מצב שתייה:</strong> כל טעות? לוקחים שלוק!</li>
+                <li><span class="interactive-icon">📸</span> <strong>שובר שוויון מאתגר:</strong> בתיקו? הראשון שמראה תמונה שקשורה לזיכרון — מנצח!</li>
+            </ul>
+            <p style="text-align: center;">💡 אתם מחליטים אם לשלב, לדלג, או להמציא חוקים משלכם</p>
+        </div>
+        
+        <div class="info-box">
+            <div class="input-group">
+                <label style="font-size: 1.1rem;">האם לכלול משימות חושניות במשחק?</label>
+                <div style="display: flex; align-items: center; justify-content: center; margin: 0.8rem 0;">
+                    <span style="font-size: 1rem;">כן</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="sensual-tasks" checked aria-label="כלול משימות חושניות">
+                        <span class="slider"></span>
+                    </label>
+                    <span style="font-size: 1rem;">לא</span>
+                </div>
+                <div id="sensual-warning" class="sensual-warning">
+                    <span class="interactive-icon">⚠️</span> בחירה ב"כן" תוסיף משימות אינטימיות למשחק
                 </div>
             </div>
-            <div class="screen-actions">
-                <button class="btn" onclick="startCountdown()" aria-label="התחל משחק"><span class="interactive-icon">🎮</span> מוכנים? בואו נתחיל!</button>
-            </div>
         </div>
+    </div>
+    <div class="screen-actions">
+        <button class="btn" onclick="startCountdown()" aria-label="התחל משחק"><span class="interactive-icon">🎮</span> מוכנים? בואו נתחיל!</button>
+    </div>
+</div>
 
         <!-- מסך ספירה לאחור -->
         <div id="countdown-screen" class="screen" role="main">
@@ -395,3 +414,4 @@
 <script src="script.js" defer></script>
 </body>
 </html>
+
