@@ -341,8 +341,8 @@ const chapters = [
         title: "🌟 חלק 1: זיכרונות קלאסיים",
         questions: [
             "איפה היה הדייט הראשון שלכם?",
-            "מה הייתה ההזמנה האחרונה שהזמנתם בטייקאווי?",
-            "באיזה סרט צפיתם יחד בפעם האחרונה?",
+            "באיזו עיר נפגשתם בפעם הראשונה?",
+            "מה הייתה המתנה הראשונה שנתתם אחד לשני?",
             "באיזה יום בשבוע היה הדייט הראשון שלכם?",
             "איפה שתיתם קפה זוגי לאחרונה מחוץ לבית?",
             "איפה חגגתם לראשונה משהו זוגי (כמו חודש, חצי שנה או יום הולדת)?"
@@ -351,7 +351,7 @@ const chapters = [
     {
         title: "⚡ חלק 2: הרגעים של עכשיו",
         questions: [
-            "איפה היה הדייט האחרון שלכם – רק שניכם שלא היה במסעדה?",
+            "איפה היה הדייט האחרון שלכם מחוץ לבית שלא היה במסעדה?",
             "מתי בפעם האחרונה אמרתם \"אני אוהב/ת אותך\"?",
             "מה הייתה ההודעה האחרונה ששלחתם אחד לשני?",
             "מתי בפעם האחרונה עשיתם פעילות ספורטיבית ביחד?",
@@ -365,10 +365,10 @@ const chapters = [
         title: "👥 חלק 3: מפגשים חברתיים",
         questions: [
             "איפה נפגשתם לראשונה עם המשפחה של PLAYER1?",
-            "מתי אירחתם אנשים בפעם האחרונה ומי היה?",
+                "מתי הייתה הפעם האחרונה שנפגשתם עם חברים משותפים – ואצל מי זה היה?",
             "מתי עשיתם ערב חג ראשון אצל המשפחה של PLAYER2?",
-            "מתי הייתה הפעם האחרונה שנפגשתם עם חברים משותפים – ואצל מי זה היה?",
             "איפה פגשתם לראשונה את החברים הכי קרובים של PLAYER1?",
+			 "איפה נפגשתם לראשונה עם המשפחה של PLAYER2?",
             "מה היה האירוע החברתי האחרון שהייתם בו יחד – ואיפה זה היה?"
         ]
     },
@@ -377,8 +377,9 @@ const chapters = [
         questions: [
             "איפה הייתם בפעם האחרונה שישנתם מחוץ לבית?",
             "מה היה המקום האחרון שבו אכלתם יחד בחוץ (מסעדה/בית קפה)?",
-            "מה היה הסרט האחרון שראיתם יחד בבית?",
-            "מה היה המשלוח האחרון שקיבלתם יחד (אוכל או חבילה)?"
+            "מה הייתה התמונה הזוגית האחרונה שצילמתם?",
+			  "מי אמר \"אני אוהב/ת אותך\" בפעם האחרונה – ומתי זה היה?",
+            "לאן נסעתם ביחד בפעם האחרונה?"
         ]
     },
     {
@@ -388,7 +389,7 @@ const chapters = [
             "איפה הייתם ביום האהבה הראשון שלכם (ולנטיין / ט\"ו באב)?",
             "מתי בפעם האחרונה עשיתם יחד יום כיף בבית? (מרתון טלוויזיה, אוכל טוב וכו')",
             "מתי הייתה הפעם האחרונה שקניתם אחד לשני מתנה שלא ליום הולדת – ומה הייתה המתנה?",
-            "איזו הודעה משמחת או חשובה קיבל אחד מכם לאחרונה – ומה עשיתם באותו רגע?",
+            "מתי הייתה הפעם הראשונה שאמרתם אני אוהב\ת אותך?",
             "מתי ואיפה הייתם כשקיבלתם יחד החלטה על משהו משמעותי – כמו לקנות משהו גדול, לשנות כיוון או להתחיל משהו חדש?"
         ]
     },
@@ -401,9 +402,9 @@ const chapters = [
             "מי יזם את הפעם האחרונה שנסעתם לחופשה יחד?",
             "מי זה שהביא את הרעיון לבלות את הסופ\"ש האחרון כמו שהוא היה?",
             "מי בחר את הסדרה האחרונה שראיתם יחד?",
+			"מה היו ההודעות הראשונות ששלחתם אחד לשנייה?",
             "מי הציע לעשות משהו רומנטי בפעם האחרונה – ומה זה היה?",
             "מי זה שבחר את המסעדה האחרונה?",
-            "מי אמר \"אני אוהב/ת אותך\" בפעם האחרונה – ומתי זה היה?",
             "רגע של שיתוף – מתי הייתה הפעם האחרונה שהסתכלתם אחד על השני וחשבתם \"איזה מזל שאנחנו יחד\"? ואיפה זה היה?"
         ]
     }
@@ -537,7 +538,7 @@ function nextScreen() {
         savePrizeInfo();
     }
 
-    const screens = ['welcome-screen', 'players-screen', 'prize-screen', 'rules-screen'];
+    const screens = ['welcome-screen', 'players-screen', 'prize-screen', 'rules-screen','spice-screen'];
     gameState.currentScreen++;
 
     if (gameState.currentScreen < screens.length) {
@@ -947,6 +948,7 @@ function answerQuestion(answer, event) {
         gameState.player1.consecutiveFailures = 0;
         gameState.player2.failures++;
         gameState.player2.consecutiveFailures++;
+		gameState.player2.totalFailures++;
         if (gameState.player2.failures === 3) willHaveThreeFailures = true;
         playSuccess();
     } else if (answer === 2) {
@@ -954,6 +956,7 @@ function answerQuestion(answer, event) {
         gameState.player2.consecutiveFailures = 0;
         gameState.player1.failures++;
         gameState.player1.consecutiveFailures++;
+		gameState.player1.totalFailures++;
         if (gameState.player1.failures === 3) willHaveThreeFailures = true;
         playSuccess();
     } else if (answer === 'both') {
@@ -967,6 +970,8 @@ function answerQuestion(answer, event) {
         gameState.player2.failures++;
         gameState.player1.consecutiveFailures++;
         gameState.player2.consecutiveFailures++;
+		gameState.player1.totalFailures++;
+gameState.player2.totalFailures++;
         if (gameState.player1.failures === 3 || gameState.player2.failures === 3) willHaveThreeFailures = true;
         playError();
     }
@@ -999,19 +1004,23 @@ function checkForEncouragementMessage() {
     let messagePlayer = null;
     let otherPlayer = null;
 
-    // שמירת מצב קודם לפני איפוס - עכשיו מודקים ב-2 במקום 3
-    const player1Had2Failures = gameState.player1.consecutiveFailures === 2;
-    const player2Had2Failures = gameState.player2.consecutiveFailures === 2;
+    
 
-    if (player1Had2Failures) {
-        messagePlayer = gameState.player1;
-        otherPlayer = gameState.player2;
-        gameState.player1.consecutiveFailures = 0; // איפוס אחרי הצגת הודעה
-    } else if (player2Had2Failures) {
-        messagePlayer = gameState.player2;
-        otherPlayer = gameState.player1;
-        gameState.player2.consecutiveFailures = 0; // איפוס אחרי הצגת הודעה
-    }
+// בדיקה: 4 פסילות כוללות ו-2 רצופות אחרונות
+const player1Had4With2Consecutive = gameState.player1.totalFailures >= 4 && gameState.player1.consecutiveFailures === 2;
+const player2Had4With2Consecutive = gameState.player2.totalFailures >= 4 && gameState.player2.consecutiveFailures === 2;
+
+   if (player1Had4With2Consecutive) {
+    messagePlayer = gameState.player1;
+    otherPlayer = gameState.player2;
+    gameState.player1.consecutiveFailures = 0; // איפוס רצופות
+  gameState.player1.totalFailures = 0; // איפוס הספירה הכוללת - מתחיל מחדש!
+} else if (player2Had4With2Consecutive) {
+    messagePlayer = gameState.player2;
+    otherPlayer = gameState.player1;
+    gameState.player2.consecutiveFailures = 0; // איפוס רצופות  
+ gameState.player2.totalFailures = 0; // איפוס הספירה הכוללת - מתחיל מחדש!
+}
 
     if (messagePlayer) {
         const messageType = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
@@ -1461,24 +1470,25 @@ function submitFeedback() {
         return;
     }
 
-    // יצירת הודעת משוב למייל
-    const subject = encodeURIComponent('משוב ממשחק הזיכרון הגדול');
-    const body = encodeURIComponent(`משוב ממשחק הזיכרון הגדול:
+    // אתחול EmailJS (רק פעם אחת)
+    if (!window.emailjsInitialized) {
+        emailjs.init('JnxSe17bH1XzmVWlp');
+        window.emailjsInitialized = true;
+    }
 
-שחקנים: ${gameState.player1.name} ו-${gameState.player2.name}
-תוצאות: ${gameState.player1.name} - ${gameState.player1.score} נקודות, ${gameState.player2.name} - ${gameState.player2.score} נקודות
-
-המשוב:
-${feedback}
-
----
-נשלח אוטומטית ממשחק הזיכרון הגדול`);
-
-    const mailtoUrl = `mailto:rotemadini@gmail.com?subject=${subject}&body=${body}`;
-    window.open(mailtoUrl, '_blank');
-    
-    document.getElementById('feedback-text').value = '';
-    showMessage('תודה על המשוב! המייל נפתח - אנא שלחו אותו.');
+    // שליחת המייל ישירות
+    emailjs.send('service_eidiga8', 'template_qblegu6', {
+    rating: `${gameState.player1.name} ו-${gameState.player2.name}`,
+    message: feedback
+    }).then(() => {
+        document.getElementById('feedback-text').value = '';
+        showMessage('תודה! המשוב נשלח בהצלחה!');
+        playSuccess();
+    }).catch((error) => {
+        console.error('EmailJS Error:', error);
+        showMessage('שגיאה בשליחה. נסו שוב מאוחר יותר.');
+        playError();
+    });
 }
 
 function showConfirmDialog(title, message, onConfirm, onCancel) {
@@ -1545,8 +1555,8 @@ function doRestartGame() {
         currentScreen: 0,
         currentQuestion: 0,
         currentChapter: 0,
-        player1: { name: '', gender: 'male', emoji: '😊', score: 0, failures: 0, consecutiveFailures: 0 },
-        player2: { name: '', gender: 'male', emoji: '😎', score: 0, failures: 0, consecutiveFailures: 0 },
+   player1: { name: '', gender: 'male', emoji: '😊', score: 0, failures: 0, consecutiveFailures: 0, totalFailures: 0 },
+player2: { name: '', gender: 'male', emoji: '😎', score: 0, failures: 0, consecutiveFailures: 0, totalFailures: 0 },
         prize: '',
         sensualTasks: true,
         currentTaskIndex: 0,
@@ -1866,4 +1876,5 @@ window.saveSettings = saveSettings;
 window.closeSettings = closeSettings;
 window.toggleSettingsSection = toggleSettingsSection;
 window.sendContactMessage = sendContactMessage;
+
 window.toggleSound = toggleSound;
