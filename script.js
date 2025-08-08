@@ -834,57 +834,16 @@ function getTotalQuestionsBeforeChapter(chapterIndex) {
 }
 
 function checkForSensualTask() {
+    // אם לא נבחרו משימות חושניות - פשוט חזור מבלי לעשות כלום
     if (!gameState.sensualTasks) {
-        // אם לא נבחרו משימות חושניות - הצג אזהרה אדומה
-        if (gameState.player1.failures >= 3 || gameState.player2.failures >= 3) {
-            let playerWith3Failures = null;
-            if (gameState.player1.failures >= 3) {
-                playerWith3Failures = gameState.player1;
-                gameState.player1.failures = 0;
-                gameState.player1.consecutiveFailures = 0; // איפוס גם כאן
-            }
-            if (gameState.player2.failures >= 3) {
-                playerWith3Failures = gameState.player2;
-                gameState.player2.failures = 0;
-                gameState.player2.consecutiveFailures = 0; // איפוס גם כאן
-            }
-            
-            // הצג הודעה אדומה שאין משימות
-            document.getElementById('failure-warning-content').innerHTML = `
-                <strong>שימו לב!</strong><br><br>
-                <span style="color: #ff6b6b; font-size: 1.2em;">לא יהיו משימות כלל במשחק</span><br><br>
-                בחרתם שלא לכלול משימות אינטימיות, לכן אין משימה עבור השחקן שהגיע ל-3 פסילות.
-            `;
-            
-            // שינוי הצבע של הפופאפ לאדום
-            const popup = document.getElementById('failure-warning-popup');
-            const popupContent = popup.querySelector('.popup-content');
-            popupContent.style.background = 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)';
-            
-            const readyButton = document.querySelector('#failure-warning-popup .btn-danger');
-            readyButton.innerHTML = `<span class="interactive-icon">✅</span> הבנו`;
-            readyButton.onclick = () => {
-                playButtonClick();
-                // החזר את הצבע הרגיל
-                popupContent.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                document.getElementById('failure-warning-popup').style.display = 'none';
-            };
-            
-            // הסתר את כפתור הדילוג
-            const skipButton = document.querySelector('#failure-warning-popup .btn-secondary');
-            skipButton.style.display = 'none';
-            
-            document.getElementById('failure-warning-popup').style.display = 'flex';
-        }
-        return;
+        return; // המספור ימשיך לעלות ללא איפוס או פופאפים
     }
 
-
+    // רק אם נבחרו משימות חושניות - המשך עם הלוגיקה הקיימת
     if (gameState.player1.failures >= 3 && gameState.player2.failures >= 3) {
         gameState.currentTaskPlayer = 'both';
         gameState.player1.failures = 0;
         gameState.player2.failures = 0;
-        // איפוס פסילות רצופות של שני השחקנים
         gameState.player1.consecutiveFailures = 0;
         gameState.player2.consecutiveFailures = 0;
         showCoupleTask();
@@ -895,28 +854,22 @@ function checkForSensualTask() {
     if (gameState.player1.failures >= 3) {
         taskPlayer = gameState.player1;
         gameState.currentTaskPlayer = gameState.player1;
-        gameState.player1.failures = 0; // איפוס לאחר הגעה ל-3
-        gameState.player1.consecutiveFailures = 0; // איפוס פסילות רצופות
+        gameState.player1.failures = 0;
+        gameState.player1.consecutiveFailures = 0;
     } else if (gameState.player2.failures >= 3) {
         taskPlayer = gameState.player2;
         gameState.currentTaskPlayer = gameState.player2;
-        gameState.player2.failures = 0; // איפוס לאחר הגעה ל-3
-        gameState.player2.consecutiveFailures = 0; // איפוס פסילות רצופות
+        gameState.player2.failures = 0;
+        gameState.player2.consecutiveFailures = 0;
     }
 
-    if (taskPlayer) {
-        if (gameState.currentTaskIndex >= sensualTasks.length) {
-            gameState.currentTaskIndex = 0;
-            showMessage(`נגמרו המשימות! חוזרים להתחלה... 😏`);
-            setTimeout(() => {
-                showFailureWarning(taskPlayer);
-            }, 2000);
-        } else {
-            showFailureWarning(taskPlayer);
-        }
+   if (taskPlayer) {
+    if (gameState.currentTaskIndex >= sensualTasks.length) {
+        gameState.currentTaskIndex = 0;
     }
+    showFailureWarning(taskPlayer);
 }
-
+}
 
 function answerQuestion(answer, event) {
     playButtonClick();
@@ -1394,25 +1347,26 @@ function showResults() {
             </div>
     `;
 
-    if (winner) {
-        const winnerVerb = getGenderVerb(winnerGender, 'ניצח', 'ניצחה');
-        resultsHTML += `
-            <div style="background: linear-gradient(45deg, #ffeaa7, #fab1a0); color: #333; padding: 2rem; border-radius: 25px; margin: 2rem 0; animation: pulse 2s infinite;">
-                <h3 style="font-size: 2rem; margin-bottom: 1rem;"><span class="interactive-icon">🏆</span> ${sanitizeHTML(winner)} ${winnerVerb}!</h3>
-                <p style="font-size: 1.4rem; margin-top: 1rem;">
-                    הפרס ${getGenderAddress(winnerGender, 'שלך', 'שלך')}: <strong>${sanitizeHTML(gameState.prize)}</strong>
-                </p>
-            </div>
-        `;
-    } else {
-        resultsHTML += `
-            <div style="background: linear-gradient(45deg, #74b9ff, #0984e3); padding: 2rem; border-radius: 25px; margin: 2rem 0; animation: pulse 2s infinite;">
-                <h3 style="font-size: 2rem; margin-bottom: 1rem;"><span class="interactive-icon">🤝</span> תיקו!</h3>
-                <p style="font-size: 1.4rem; margin-top: 1rem;">
-                    שניכם זוכים ב: <strong>${sanitizeHTML(gameState.prize)}</strong>
-                </p>
-            </div>
-        `;
+  if (winner) {
+    const winnerVerb = getGenderVerb(winnerGender, 'ניצח', 'ניצחה');
+    resultsHTML += `
+        <div style="background: linear-gradient(45deg, #ffeaa7, #fab1a0); color: #333; padding: 0.8rem; border-radius: 15px; margin: 0.8rem 0; animation: pulse 2s infinite;">
+            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;"><span class="interactive-icon">🏆</span> ${sanitizeHTML(winner)} ${winnerVerb}!</h3>
+            <p style="font-size: 1rem; margin-top: 0.5rem;">
+                הפרס ${getGenderAddress(winnerGender, 'שלך', 'שלך')}: <strong>${sanitizeHTML(gameState.prize)}</strong>
+            </p>
+        </div>
+    `;
+} else {
+    resultsHTML += `
+        <div style="background: linear-gradient(45deg, #74b9ff, #0984e3); padding: 0.8rem; border-radius: 15px; margin: 0.8rem 0; animation: pulse 2s infinite;">
+            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;"><span class="interactive-icon">🤝</span> תיקו!</h3>
+            <p style="font-size: 1rem; margin-top: 0.5rem;">
+                שניכם זוכים ב: <strong>${sanitizeHTML(gameState.prize)}</strong>
+            </p>
+        </div>
+    `;
+
     }
 
     resultsHTML += `
@@ -1491,6 +1445,7 @@ function submitFeedback() {
     });
 }
 
+// מצא את הפונקציה showConfirmDialog ושנה אותה כך:
 function showConfirmDialog(title, message, onConfirm, onCancel) {
     // יצירת popup אישור
     const popup = document.createElement('div');
@@ -1504,8 +1459,12 @@ function showConfirmDialog(title, message, onConfirm, onCancel) {
                 ${sanitizeHTML(message)}
             </div>
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <button class="btn btn-danger" id="confirm-yes">✅ כן, התחל משחק חדש</button>
-                <button class="btn btn-secondary" id="confirm-no">❌ לא, המשך במשחק הנוכחי</button>
+                <button class="btn btn-success" id="confirm-yes">
+                    <span class="interactive-icon">▶️</span> המשך במשחק הקודם
+                </button>
+                <button class="btn btn-danger" id="confirm-no">
+                    <span class="interactive-icon">🔄</span> התחל משחק מחדש
+                </button>
             </div>
         </div>
     `;
@@ -1551,12 +1510,13 @@ function doRestartGame() {
     // ניקוי מצב שמור
     saveToLocalStorage('gameState', null);
     
+    // איפוס מלא של gameState
     gameState = {
         currentScreen: 0,
         currentQuestion: 0,
         currentChapter: 0,
-   player1: { name: '', gender: 'male', emoji: '😊', score: 0, failures: 0, consecutiveFailures: 0, totalFailures: 0 },
-player2: { name: '', gender: 'male', emoji: '😎', score: 0, failures: 0, consecutiveFailures: 0, totalFailures: 0 },
+        player1: { name: '', gender: 'male', emoji: '😊', score: 0, failures: 0, consecutiveFailures: 0, totalFailures: 0 },
+        player2: { name: '', gender: 'male', emoji: '😎', score: 0, failures: 0, consecutiveFailures: 0, totalFailures: 0 },
         prize: '',
         sensualTasks: true,
         currentTaskIndex: 0,
@@ -1571,6 +1531,7 @@ player2: { name: '', gender: 'male', emoji: '😎', score: 0, failures: 0, conse
         }
     };
 
+    // איפוס שדות הקלט
     document.getElementById('player1-name').value = '';
     document.getElementById('player2-name').value = '';
     document.getElementById('prize').value = '';
@@ -1584,6 +1545,11 @@ player2: { name: '', gender: 'male', emoji: '😎', score: 0, failures: 0, conse
     document.querySelector('#player1-emoji-selector .emoji-option').classList.add('selected');
     document.querySelector('#player2-emoji-selector .emoji-option[data-emoji="😎"]').classList.add('selected');
 
+    // **הוספה חשובה: איפוס תצוגת השחקנים**
+    updatePlayerDisplay();
+    updateButtonTexts();
+
+    // **חזרה למסך הפתיחה**
     showScreen('welcome-screen', 'zoom');
 }
        
