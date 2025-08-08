@@ -1577,4 +1577,41 @@ body::before {
     z-index: -2;
     pointer-events: none;
 }
+/* הקטנת קארד הניצחון בלבד */
 
+/* הקארד הזהוב של הניצחון - קטן בהרבה */
+#final-results > div[style*="background: linear-gradient"] {
+    padding: 0.8rem !important;
+    margin: 0.5rem 0 !important;
+    border-radius: 15px !important;
+}
+
+/* כותרת הניצחון - קטנה יותר */
+#final-results > div[style*="background: linear-gradient"] h3 {
+    font-size: 1.2rem !important;
+    margin-bottom: 0.3rem !important;
+}
+
+/* טקסט הפרס - קטן יותר */
+#final-results > div[style*="background: linear-gradient"] p {
+    font-size: 1rem !important;
+    margin-top: 0.3rem !important;
+}
+
+/* תיקון נוסף למובייל */
+@media (max-width: 768px) {
+    #final-results > div[style*="background: linear-gradient"] {
+        padding: 0.6rem !important;
+        margin: 0.4rem 0 !important;
+    }
+    
+    #final-results > div[style*="background: linear-gradient"] h3 {
+        font-size: 1rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+    
+    #final-results > div[style*="background: linear-gradient"] p {
+        font-size: 0.9rem !important;
+        margin-top: 0.2rem !important;
+    }
+}
